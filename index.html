@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ashley & Eoin — August 2026</title>
+  <meta name="description" content="Join us for our wedding weekend at Ballintubbert Gardens & House, County Laois, Ireland. August 20–22, 2026." />
+
+  <!-- Google Fonts: Cormorant SC (flanking text) -->
+  <!-- Lancelot is loaded locally via @font-face in styles.css -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@600&display=swap" rel="stylesheet" />
+
+  <!-- Site stylesheet -->
+  <link rel="stylesheet" href="css/styles.css" />
+
+  <!-- GSAP + ScrollTrigger via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
+
+  <!-- Site scripts — defer keeps it from blocking HTML parse -->
+  <script src="js/main.js" defer></script>
+</head>
+<body>
+
+  <!-- ============================================================
+       SECTION 1 — Hero
+       Full-height opening. Oval portrait frame, flanking text.
+       Background: #ceccaa
+  ============================================================ -->
+  <section id="hero" aria-label="Hero">
+
+    <!-- Left flanking text -->
+    <p class="hero__flanking hero__flanking--left">
+      Ballintubbert<br />Gardens &amp; House
+    </p>
+
+    <!-- Centre: oval portrait frame.
+         Four concentric div ovals stack via CSS Grid (grid-area: 1/1).
+         CSS values match Figma exactly. Portrait and name sit in the same stack. -->
+    <div class="hero__oval-frame">
+
+      <!-- Outermost ring — individual circles placed by JS along the ellipse path.
+           Each circle uses a radial gradient to simulate the Figma inset box-shadow. -->
+      <svg class="hero__oval hero__oval--dashed" viewBox="0 0 540 680" aria-hidden="true">
+        <defs>
+          <!-- Gradient replicates Figma inset box-shadow:
+               dark bottom-left (rgba(0,0,0,0.10)) + light top-right (rgba(255,255,255,0.15)) -->
+          <radialGradient id="hero-dot-gradient" cx="65%" cy="25%" r="70%" fx="65%" fy="25%">
+            <stop offset="0%"   stop-color="white"   stop-opacity="0.15" />
+            <stop offset="45%"  stop-color="#ceccaa" stop-opacity="0.10" />
+            <stop offset="100%" stop-color="black"   stop-opacity="0.10" />
+          </radialGradient>
+        </defs>
+        <g id="hero-dots"></g>
+      </svg>
+
+      <!-- Outer ring — outer drop shadows give depth -->
+      <div class="hero__oval hero__oval--outer" aria-hidden="true"></div>
+
+      <!-- Middle ring — inset shadows -->
+      <div class="hero__oval hero__oval--middle" aria-hidden="true"></div>
+
+      <!-- Inner ring — inset shadows, tightest around portrait -->
+      <div class="hero__oval hero__oval--inner" aria-hidden="true"></div>
+
+      <!-- Portrait — sits above ovals via z-index, clips to oval shape.
+           Replace this <div> with an <img> when the real portrait is ready. -->
+      <div
+        class="hero__portrait"
+        role="img"
+        aria-label="Ashley and Eoin"
+      ></div>
+
+      <!-- Name overlay — topmost layer -->
+      <h1 class="hero__names">Ashley <br /> &amp; Eoin</h1>
+
+    </div>
+
+    <!-- Right flanking text -->
+    <p class="hero__flanking hero__flanking--right">
+      Wedding Weekend<br />Aug 20–22, 2026
+    </p>
+
+  </section>
+
+
+  <!-- ============================================================
+       SECTION 2 — "Our forever begins in Ireland…"
+       Intro copy. Light cream background. No photo.
+       Background: #efe6d3
+  ============================================================ -->
+  <section id="intro" aria-labelledby="intro-heading">
+
+    <!-- Text block — heading + body stacked, centred in section -->
+    <div class="intro__content">
+      <h2 id="intro-heading">Our forever begins in Ireland…</h2>
+      <div class="intro__body-group">
+        <p class="intro__body">Together with our families, we, Ashley and Eoin joyfully invite you to celebrate our union of marriage.</p>
+        <p class="intro__body">As we count down the days until our wedding, we’ve gathered everything you need to plan your magical getaway to the place we’ll soon call home.</p>
+      </div>
+    </div>
+
+    <!-- Grá Mór illustration — absolute, 24px left of body text, 136px from bottom -->
+    <img
+      src="images/gra-mor-illustration.png"
+      alt=""
+      width="320"
+      height="239"
+      class="intro__illustration"
+      aria-hidden="true"
+    />
+
+  </section>
+
+
+  <!-- ============================================================
+       SECTION 3 — Our Story ⚠️ DEFERRED (static placeholder)
+       Full bleed floral background. Two open letters side by side.
+       Envelope animation will be added in a separate build phase.
+  ============================================================ -->
+  <section id="our-story" aria-labelledby="our-story-heading">
+    <h2 id="our-story-heading">Our Story</h2>
+
+    <div class="our-story__letters">
+      <!-- Ashley's letter — rotated -8deg via CSS -->
+      <article class="our-story__letter our-story__letter--ashley">
+        <h3>Ashley</h3>
+        <p>
+          <!-- Ashley's letter text (lorem ipsum placeholder) -->
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        </p>
+      </article>
+
+      <!-- Eoin's letter — rotated +8deg via CSS -->
+      <article class="our-story__letter our-story__letter--eoin">
+        <h3>Eoin</h3>
+        <p>
+          <!-- Eoin's letter text (lorem ipsum placeholder) -->
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        </p>
+      </article>
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       SECTION 4 — Proposal Photo
+       Full-height photo. Zero text. Parallax scroll effect later.
+  ============================================================ -->
+  <section id="proposal" aria-label="Proposal photo">
+    <img
+      src="images/proposal-muckross.jpg"
+      alt="Ashley and Eoin at Muckross House during their proposal"
+      width="1920"
+      height="1080"
+      class="proposal__photo"
+    />
+  </section>
+
+
+  <!-- ============================================================
+       SECTION 5 — Welcome to Dublin
+       Wednesday, August 19th. Attendance optional.
+       Background: #efe6d3
+  ============================================================ -->
+  <section id="welcome-dublin" aria-labelledby="dublin-heading">
+    <header class="event-section__header">
+      <h2 id="dublin-heading">Welcome to Dublin</h2>
+      <div class="event-section__meta">
+        <p class="event-section__date">Wednesday, August 19th</p>
+        <span class="event-section__badge">Attendance Optional</span>
+      </div>
+    </header>
+
+    <div class="event-section__content">
+      <!-- Left column: description -->
+      <div class="event-section__description">
+        <p>Placeholder: Who's invited and what to expect.</p>
+      </div>
+      <!-- Right column: time, schedule, location -->
+      <div class="event-section__logistics">
+        <p>Placeholder: Time, schedule, and location details.</p>
+      </div>
+    </div>
+
+    <!-- 4-image strip below section content -->
+    <div class="event-section__image-strip" aria-hidden="true">
+      <img src="images/dublin-1.jpg" alt="" width="480" height="280" />
+      <img src="images/dublin-2.jpg" alt="" width="480" height="280" />
+      <img src="images/dublin-3.jpg" alt="" width="480" height="280" />
+      <img src="images/dublin-4.jpg" alt="" width="480" height="280" />
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       SECTION 6 — The Night Before at The Fisherman's
+       Thursday, August 20th. Attendance optional.
+       Background: #efe6d3
+  ============================================================ -->
+  <section id="night-before" aria-labelledby="night-before-heading">
+    <header class="event-section__header">
+      <h2 id="night-before-heading">The Night Before</h2>
+      <div class="event-section__meta">
+        <p class="event-section__date">Thursday, August 20th</p>
+        <span class="event-section__badge">Attendance Optional</span>
+      </div>
+    </header>
+
+    <div class="event-section__content">
+      <div class="event-section__description">
+        <p>Placeholder: The Fisherman's pub details and who's invited.</p>
+      </div>
+      <div class="event-section__logistics">
+        <p>Placeholder: Time, schedule, and location details.</p>
+      </div>
+    </div>
+
+    <!-- 4-image strip -->
+    <div class="event-section__image-strip" aria-hidden="true">
+      <img src="images/fishermans-1.jpg" alt="" width="480" height="280" />
+      <img src="images/fishermans-2.jpg" alt="" width="480" height="280" />
+      <img src="images/fishermans-3.jpg" alt="" width="480" height="280" />
+      <img src="images/fishermans-4.jpg" alt="" width="480" height="280" />
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       SECTION 7 — Our Wedding Day
+       Friday, August 21st. Dark green. 3-col layout. Timeline.
+       The Venue is embedded at the bottom of this section.
+       Background: #43461f
+  ============================================================ -->
+  <section id="wedding-day" aria-labelledby="wedding-day-heading">
+
+    <!-- Date overline + heading -->
+    <p class="wedding-day__overline">Friday, August 21st</p>
+    <h2 id="wedding-day-heading">Our Wedding Day</h2>
+
+    <!-- Three-column: venue text | fountain photo | attire -->
+    <div class="wedding-day__three-col">
+      <div class="wedding-day__col wedding-day__col--left">
+        <p>Placeholder: Venue intro text — "The Heart of Our Story Unfolds Here"</p>
+      </div>
+      <div class="wedding-day__col wedding-day__col--centre">
+        <img
+          src="images/ballintubbert-fountain.jpg"
+          alt="The fountain at Ballintubbert Gardens"
+          width="560"
+          height="700"
+          class="wedding-day__fountain-photo"
+        />
+      </div>
+      <div class="wedding-day__col wedding-day__col--right">
+        <p>Placeholder: Attire copy — Formal Garden Elegance</p>
+      </div>
+    </div>
+
+    <hr class="wedding-day__divider" />
+
+    <!-- Attire label -->
+    <div class="wedding-day__attire">
+      <p class="wedding-day__attire-label">Attire — Formal Garden Elegance</p>
+      <p>Placeholder: Attire description.</p>
+    </div>
+
+    <hr class="wedding-day__divider" />
+
+    <!-- Timeline -->
+    <div class="wedding-day__timeline" role="list" aria-label="Order of the day">
+
+      <article class="timeline__event timeline__event--left" role="listitem">
+        <time class="timeline__time">1:15 pm</time>
+        <h3 class="timeline__label">Arrival</h3>
+        <img src="images/timeline-arrival.jpg" alt="Ballintubbert house" width="200" height="150" class="timeline__photo" />
+      </article>
+
+      <article class="timeline__event timeline__event--right" role="listitem">
+        <time class="timeline__time">2:00 pm</time>
+        <h3 class="timeline__label">Ceremony</h3>
+        <img src="images/timeline-ceremony.jpg" alt="Wedding rings" width="200" height="150" class="timeline__photo" />
+      </article>
+
+      <article class="timeline__event timeline__event--left" role="listitem">
+        <time class="timeline__time">2:45 pm</time>
+        <h3 class="timeline__label">Toast</h3>
+        <!-- No thumbnail for toast -->
+      </article>
+
+      <article class="timeline__event timeline__event--right" role="listitem">
+        <time class="timeline__time">6:00 pm</time>
+        <h3 class="timeline__label">Feast</h3>
+        <img src="images/timeline-feast.jpg" alt="Dinner setting" width="200" height="150" class="timeline__photo" />
+      </article>
+
+      <article class="timeline__event timeline__event--left" role="listitem">
+        <time class="timeline__time">9:00 pm</time>
+        <h3 class="timeline__label">Party</h3>
+        <img src="images/timeline-party.jpg" alt="Disco ball" width="200" height="150" class="timeline__photo" />
+      </article>
+
+      <article class="timeline__event timeline__event--right" role="listitem">
+        <time class="timeline__time">1:30 am</time>
+        <h3 class="timeline__label">Goodbyes</h3>
+      </article>
+
+    </div>
+
+    <!-- Full-bleed reflecting pool photo -->
+    <img
+      src="images/ballintubbert-reflecting-pool.jpg"
+      alt="The reflecting pool at Ballintubbert Gardens"
+      width="1920"
+      height="1080"
+      class="wedding-day__reflecting-pool"
+    />
+
+    <!-- The Venue sub-section — anchor for nav -->
+    <div id="the-venue" class="wedding-day__venue">
+      <p class="venue__overline">The Venue</p>
+      <h3 class="venue__name">Ballintubbert Gardens &amp; House</h3>
+      <p class="venue__copy">
+        Placeholder: Venue description copy.
+      </p>
+      <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="venue__location-link">
+        County Laois, Ireland — View on Maps
+      </a>
+    </div>
+
+  </section>
+
+
+  <!-- ============================================================
+       SECTION 8 — Day Two Celebration
+       Saturday, August 22nd.
+       Background: #efe6d3
+  ============================================================ -->
+  <section id="day-two" aria-labelledby="day-two-heading">
+    <header class="event-section__header">
+      <h2 id="day-two-heading">Day Two Celebration</h2>
+      <div class="event-section__meta">
+        <p class="event-section__date">Saturday, August 22nd</p>
+      </div>
+    </header>
+
+    <div class="event-section__content">
+      <div class="event-section__description">
+        <p>Placeholder: Day Two details and what to expect.</p>
+      </div>
+      <div class="event-section__logistics">
+        <p>Placeholder: Time, schedule, and location.</p>
+      </div>
+    </div>
+
+    <!-- 4-image strip -->
+    <div class="event-section__image-strip" aria-hidden="true">
+      <img src="images/day-two-1.jpg" alt="" width="480" height="280" />
+      <img src="images/day-two-2.jpg" alt="" width="480" height="280" />
+      <img src="images/day-two-3.jpg" alt="" width="480" height="280" />
+      <img src="images/day-two-4.jpg" alt="" width="480" height="280" />
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       SECTION 9 — How to Get There
+       Background: #eeeade
+  ============================================================ -->
+  <section id="getting-there" aria-labelledby="getting-there-heading">
+    <div class="getting-there__content">
+      <!-- Left: heading + directions text -->
+      <div class="getting-there__text">
+        <h2 id="getting-there-heading">How to Get There</h2>
+        <p>Placeholder: Driving, flying, and taxi directions.</p>
+      </div>
+
+      <!-- Right: polaroid photos + Ireland map -->
+      <div class="getting-there__visuals">
+        <figure class="polaroid">
+          <img src="images/getting-there-1.jpg" alt="" width="280" height="320" />
+        </figure>
+        <figure class="polaroid">
+          <img src="images/getting-there-2.jpg" alt="" width="280" height="320" />
+        </figure>
+        <figure class="getting-there__map">
+          <img
+            src="images/ireland-map.png"
+            alt="Map of Ireland with a pin at County Laois"
+            width="320"
+            height="400"
+          />
+          <figcaption>We're here</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       SECTION 10 — Where to Stay
+       Background: #eeeade
+  ============================================================ -->
+  <section id="where-to-stay" aria-labelledby="where-to-stay-heading">
+    <h2 id="where-to-stay-heading" class="visually-hidden">Where to Stay</h2>
+
+    <blockquote class="where-to-stay__pull-quote">
+      "We recommend staying nearby and sharing taxis — the countryside deserves to be enjoyed."
+    </blockquote>
+
+    <div class="where-to-stay__tables">
+      <!-- Near the Venue -->
+      <div class="where-to-stay__column">
+        <h3>Near the Venue</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Distance</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="#" target="_blank" rel="noopener noreferrer">Placeholder Hotel</a></td>
+              <td>5 min</td>
+              <td>Placeholder note</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Dublin City Break -->
+      <div class="where-to-stay__column">
+        <h3>Dublin City Break</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Area</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="#" target="_blank" rel="noopener noreferrer">Placeholder Hotel</a></td>
+              <td>City Centre</td>
+              <td>Placeholder note</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       SECTION 11 — Common Questions
+       Accordion. Background: #ceccaa
+  ============================================================ -->
+  <section id="common-questions" aria-labelledby="faq-heading">
+    <h2 id="faq-heading">Common<br />Questions</h2>
+
+    <div class="faq__accordion" role="list">
+
+      <article class="faq__item" role="listitem">
+        <button
+          class="faq__question"
+          aria-expanded="false"
+          aria-controls="faq-answer-1"
+        >
+          Placeholder question one?
+          <!-- Wax seal expand indicator goes here -->
+          <span class="faq__seal" aria-hidden="true"></span>
+        </button>
+        <div id="faq-answer-1" class="faq__answer" hidden>
+          <p>Placeholder answer text.</p>
+        </div>
+      </article>
+
+      <article class="faq__item" role="listitem">
+        <button
+          class="faq__question"
+          aria-expanded="false"
+          aria-controls="faq-answer-2"
+        >
+          Placeholder question two?
+          <span class="faq__seal" aria-hidden="true"></span>
+        </button>
+        <div id="faq-answer-2" class="faq__answer" hidden>
+          <p>Placeholder answer text.</p>
+        </div>
+      </article>
+
+      <article class="faq__item" role="listitem">
+        <button
+          class="faq__question"
+          aria-expanded="false"
+          aria-controls="faq-answer-3"
+        >
+          Placeholder question three?
+          <span class="faq__seal" aria-hidden="true"></span>
+        </button>
+        <div id="faq-answer-3" class="faq__answer" hidden>
+          <p>Placeholder answer text.</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       SECTION 12 — Gifts
+       Three fanned cards. Background: #eeeade
+  ============================================================ -->
+  <section id="gifts" aria-labelledby="gifts-heading">
+    <h2 id="gifts-heading">Placeholder: Gifts intro heading</h2>
+
+    <div class="gifts__cards">
+
+      <article class="gifts__card gifts__card--revolut">
+        <div class="gifts__qr-placeholder" aria-label="Revolut QR code placeholder"></div>
+        <p class="gifts__method">Revolut</p>
+        <p class="gifts__details">Placeholder: @handle or link</p>
+      </article>
+
+      <article class="gifts__card gifts__card--zelle">
+        <div class="gifts__qr-placeholder" aria-label="Zelle QR code placeholder"></div>
+        <p class="gifts__method">Zelle</p>
+        <p class="gifts__details">Placeholder: phone or email</p>
+      </article>
+
+      <article class="gifts__card gifts__card--cash">
+        <div class="gifts__qr-placeholder" aria-label="Cash QR code placeholder"></div>
+        <p class="gifts__method">Cash</p>
+        <p class="gifts__details">Placeholder: details</p>
+      </article>
+
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       SECTION 13 — Countdown
+       Full bleed floral background. Live JS countdown.
+  ============================================================ -->
+  <section id="countdown" aria-label="Countdown to the wedding">
+    <!-- Background image is set via CSS background-image -->
+
+    <div class="countdown__display">
+      <div class="countdown__unit">
+        <span class="countdown__number" id="countdown-days">--</span>
+        <span class="countdown__label">Days</span>
+      </div>
+      <span class="countdown__colon" aria-hidden="true">:</span>
+      <div class="countdown__unit">
+        <span class="countdown__number" id="countdown-hours">--</span>
+        <span class="countdown__label">Hours</span>
+      </div>
+      <span class="countdown__colon" aria-hidden="true">:</span>
+      <div class="countdown__unit">
+        <span class="countdown__number" id="countdown-minutes">--</span>
+        <span class="countdown__label">Minutes</span>
+      </div>
+      <span class="countdown__colon" aria-hidden="true">:</span>
+      <div class="countdown__unit">
+        <span class="countdown__number" id="countdown-seconds">--</span>
+        <span class="countdown__label">Seconds</span>
+      </div>
+    </div>
+
+    <!-- Shown after wedding date has passed -->
+    <p class="countdown__married-message" hidden>We're married!</p>
+  </section>
+
+
+  <!-- ============================================================
+       SECTION 14 — Nav (The Paper Note)
+       Fixed, bottom-left. Unfurls on click.
+  ============================================================ -->
+  <nav id="site-nav" class="site-nav" aria-label="Site navigation">
+    <!-- Collapsed state: folded paper corner -->
+    <button
+      class="site-nav__toggle"
+      aria-expanded="false"
+      aria-controls="site-nav__menu"
+      aria-label="Open navigation menu"
+    >
+      <span class="site-nav__corner-label">Menu</span>
+    </button>
+
+    <!-- Expanded state: open paper note with links -->
+    <div id="site-nav__menu" class="site-nav__menu" hidden>
+      <ul>
+        <li><a href="#hero">Home</a></li>
+        <li><a href="#our-story">Our Story</a></li>
+        <li><a href="#welcome-dublin">Welcome to Dublin</a></li>
+        <li><a href="#night-before">The Night Before</a></li>
+        <li><a href="#wedding-day">Our Wedding Day</a></li>
+        <li><a href="#day-two">Day Two</a></li>
+        <li><a href="#the-venue">The Venue</a></li>
+        <li><a href="#getting-there">Getting There</a></li>
+        <li><a href="#where-to-stay">Where to Stay</a></li>
+        <li><a href="#common-questions">Questions</a></li>
+        <li><a href="#gifts">Gifts</a></li>
+        <li><a href="https://rsvp-link-tbd.com" target="_blank" rel="noopener noreferrer">RSVP</a></li>
+      </ul>
+    </div>
+  </nav>
+
+
+</body>
+</html>

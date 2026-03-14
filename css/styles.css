@@ -1,0 +1,434 @@
+/* ============================================================
+   WEDDING WEBSITE — Ashley & Eoin
+   Global Stylesheet
+   ============================================================ */
+
+
+/* ------------------------------------------------------------
+   1. @font-face declarations
+   ------------------------------------------------------------ */
+
+@font-face {
+  font-family: "TheSecretLibrary";
+  src: url("../fonts/TheSecretLibrary.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap; /* Show fallback font immediately, swap when loaded */
+}
+
+@font-face {
+  font-family: "Lancelot";
+  src: url("../fonts/Lancelot-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Recoleta";
+  src: url("../fonts/Recoleta Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Recoleta";
+  src: url("../fonts/Recoleta SemiBold.otf") format("opentype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+/* ------------------------------------------------------------
+   2. CSS Reset
+   ------------------------------------------------------------ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  /* Prevent font size inflation on mobile */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+img,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+/* Remove default list styling when lists are used for UI */
+ul,
+ol {
+  list-style: none;
+}
+
+/* Remove default button styles — we'll apply our own */
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+}
+
+/* Remove default anchor color and underline — styled per component */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+
+/* ------------------------------------------------------------
+   3. Design Tokens — all values live here as custom properties
+   ------------------------------------------------------------ */
+
+:root {
+
+  /* --- Colours --- */
+  --color-green-dark:   #43461f;  /* Primary. Text, dark section backgrounds */
+  --color-green-mid:    #969d5c;  /* Mid-tone accent */
+  --color-sand:         #b8a36a;  /* Sand accent */
+  --color-cream:        #efe6d3;  /* Text on dark backgrounds */
+  --color-bg-default:   #eeeade;  /* Default section background */
+  --color-bg-hero:      #ceccaa;  /* Hero + FAQ background */
+  --color-blue-dust:    #d6dee2;  /* Wedding Day order-of-events only */
+
+
+  /* --- Typography: Font families --- */
+  --font-h1:       "TheSecretLibrary", serif;
+  --font-h2:       "TheSecretLibrary", serif;
+  --font-h3:       "Recoleta", serif;
+  --font-h4:       "Recoleta", serif;
+  --font-body:     "Lancelot", serif;
+  --font-flanking: "Cormorant SC", serif;
+
+
+  /* --- Typography: Sizes --- */
+  --size-h1:       72px;
+  --size-h2:       64px;
+  --size-h3:       40px;
+  --size-h4:       24px;
+  --size-body:     24px;
+  --size-body-sm:  18px;
+  --size-flanking: 40px;
+
+
+  /* --- Typography: Line heights (never use 'normal') --- */
+  --leading-h1:   2;
+  --leading-h2:   1.6;
+  --leading-h3:   1;
+  --leading-h4:   1.5;
+  --leading-body: 1.6;
+
+
+  /* --- Typography: Weights --- */
+  --font-h4-weight: 600;
+
+
+  /* --- Spacing --- */
+  --page-padding:   24px;   /* Global horizontal padding */
+  --padding-sm:     16px;
+  --max-width-xl:   1280px;
+  --max-width-lg:   768px;
+  --max-width-md:   560px;
+
+  /* --- Hero oval sizing ---
+     Change portrait dimensions to resize the whole frame.
+     All ring sizes derive from these via calc(). */
+  --hero-portrait-w: 525px;
+  --hero-portrait-h: 684px;
+  --hero-gap:        12px;  /* Each side gap: portrait→inner, inner→middle, middle→outer */
+  --hero-gap-outer:   8px;  /* Each side gap: outer→dashed ring */
+
+
+  /* --- Animation easings ---
+     These are CSS custom properties for reference.
+     When used in GSAP, pass the cubic-bezier string directly.
+     When used in CSS transitions, use var() here.
+  ------------------------------------------------------------ */
+  --ease-entrance:  cubic-bezier(0.16, 1, 0.3, 1);    /* Fast in, luxurious settle */
+  --ease-deliberate: cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Slow, considered */
+  --ease-snap:      cubic-bezier(0.34, 1.56, 0.64, 1); /* Overshoots — wax seal only */
+
+}
+
+
+/* ------------------------------------------------------------
+   4. Mobile typography overrides
+   ------------------------------------------------------------ */
+
+@media (max-width: 640px) {
+  :root {
+    --size-h1:      48px;
+    --size-h2:      40px;
+    --size-h3:      28px;
+    --size-body:    18px;
+    --page-padding: 24px;
+  }
+}
+
+
+/* ------------------------------------------------------------
+   5. Base body styles
+   ------------------------------------------------------------ */
+
+body {
+  background-color: var(--color-bg-default);
+  color: var(--color-green-dark);
+  font-family: var(--font-body);
+  font-size: var(--size-body);
+  line-height: var(--leading-body);
+
+  /* Greyscale antialiasing — lighter, crisper text on Retina screens */
+  -webkit-font-smoothing: antialiased; /* Chrome, Safari, Edge */
+  -moz-osx-font-smoothing: grayscale; /* Firefox on Mac */
+
+  /* Prevent horizontal overflow caused by animations */
+  overflow-x: hidden;
+}
+
+
+/* ------------------------------------------------------------
+   6. Paper texture overlay
+   Fixed pseudo-element covers the full viewport at all times.
+   mix-blend-mode: multiply darkens underlying colours with the
+   texture's grain — light areas of the texture become invisible,
+   dark speckles show through as subtle paper texture.
+   ------------------------------------------------------------ */
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0; /* shorthand for top/right/bottom/left: 0 */
+  background-image: url('../images/background-texture.png');
+  background-repeat: repeat;
+  background-size: auto; /* tile at the image's natural size */
+  mix-blend-mode: multiply;
+  pointer-events: none; /* texture must never block clicks or scrolling */
+  z-index: 9998; /* below nav (9999), above everything else */
+}
+
+
+/* ------------------------------------------------------------
+   7. prefers-reduced-motion — global animation kill-switch
+   All GSAP animations are also gated in JS, but this ensures
+   CSS transitions are suppressed as well.
+   All GSAP animations are also gated in JS, but this ensures
+   CSS transitions are suppressed as well.
+   ------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+/* ============================================================
+   SECTION 1 — HERO
+   ============================================================ */
+
+#hero {
+  background-color: var(--color-bg-hero);
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 0 var(--page-padding);
+  overflow: hidden; /* Clip animation overflow */
+}
+
+/* Left and right flanking text */
+.hero__flanking {
+  font-family: var(--font-flanking);
+  font-size: var(--size-flanking);
+  font-weight: 600;
+  color: var(--color-green-dark);
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 1;
+  flex: 1; /* Each takes equal space beside the oval */
+}
+
+/* Oval frame — sized to fit the outermost ring */
+.hero__oval-frame {
+  display: grid;
+  place-items: center;
+  width:  calc(var(--hero-portrait-w) + 6 * var(--hero-gap) + 2 * var(--hero-gap-outer));
+  height: calc(var(--hero-portrait-h) + 6 * var(--hero-gap) + 2 * var(--hero-gap-outer));
+  flex-shrink: 0;
+}
+
+/* All direct children share the same grid cell — this is the stacking trick */
+.hero__oval-frame > * {
+  grid-area: 1 / 1;
+}
+
+/* --- Oval rings — sizes derived from portrait + gap tokens ---
+   border-radius: 50% creates a true ellipse (no flat edges).
+   Large pixel values like 802px cause flat sides on non-square elements. */
+
+/* Outermost dashed ring — SVG, sized to match frame */
+.hero__oval--dashed {
+  width:  calc(var(--hero-portrait-w) + 6 * var(--hero-gap) + 2 * var(--hero-gap-outer));
+  height: calc(var(--hero-portrait-h) + 6 * var(--hero-gap) + 2 * var(--hero-gap-outer));
+  overflow: visible; /* Lets dots render outside the SVG boundary */
+  /* Dots drawn by JS — no CSS stroke needed */
+}
+
+/* Outer ring: portrait + 3 gaps each side */
+.hero__oval--outer {
+  width:  calc(var(--hero-portrait-w) + 6 * var(--hero-gap));
+  height: calc(var(--hero-portrait-h) + 6 * var(--hero-gap));
+  border-radius: 50%;
+  background: rgba(186, 185, 161, 0.10);
+  box-shadow:
+     2px -2px 1px 0 rgba(255, 255, 255, 0.20),
+    -1px  1px 5px 0 rgba(0, 0, 0, 0.15);
+}
+
+/* Middle ring: portrait + 2 gaps each side */
+.hero__oval--middle {
+  width:  calc(var(--hero-portrait-w) + 4 * var(--hero-gap));
+  height: calc(var(--hero-portrait-h) + 4 * var(--hero-gap));
+  border-radius: 50%;
+  background: rgba(186, 185, 161, 0.10);
+  box-shadow:
+    -2px  1px 2px 0 rgba(0, 0, 0, 0.10) inset,
+     1px -1px 2px 0 rgba(255, 255, 255, 0.20) inset;
+}
+
+/* Inner ring: portrait + 1 gap each side */
+.hero__oval--inner {
+  width:  calc(var(--hero-portrait-w) + 2 * var(--hero-gap));
+  height: calc(var(--hero-portrait-h) + 2 * var(--hero-gap));
+  border-radius: 50%;
+  background: rgba(186, 185, 161, 0.10);
+  box-shadow:
+    -2px  1px 2px 0 rgba(0, 0, 0, 0.10) inset,
+     1px -1px 2px 0 rgba(255, 255, 255, 0.20) inset;
+}
+
+/* Portrait — sits above oval rings via z-index */
+.hero__portrait {
+  width:  var(--hero-portrait-w);
+  height: var(--hero-portrait-h);
+  border-radius: 50%;
+  background-color: var(--color-green-mid); /* Placeholder — replace with <img> */
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* Name overlay — topmost layer. Width matches portrait so text wraps inside it */
+.hero__names {
+  font-family: var(--font-h1);
+  font-size: var(--size-h1);
+  line-height: var(--leading-h1);
+  color: var(--color-cream);
+  text-align: center;
+  max-width: var(--hero-portrait-w);
+  z-index: 2;
+}
+
+/* --- Hero responsive --- */
+
+@media (max-width: 1024px) {
+  #hero {
+    flex-direction: column;
+    justify-content: center;
+    gap: 40px;
+    padding-top: 60px;
+    padding-bottom: 60px;
+  }
+}
+
+/* Mobile: only the portrait size changes — all rings and frame recalculate automatically */
+@media (max-width: 640px) {
+  :root {
+    --hero-portrait-w: 260px;
+    --hero-portrait-h: 328px;
+  }
+}
+
+
+/* ============================================================
+   SECTION 2 — INTRO ("Our forever begins in Ireland…")
+   ============================================================ */
+
+#intro {
+  position: relative;       /* Illustration anchors to this */
+  background-color: var(--color-cream); /* #efe6d3 */
+  padding: 180px var(--page-padding);
+}
+
+/* Heading + body stacked, centred horizontally, 80px gap */
+.intro__content {
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 80px;
+}
+
+#intro-heading {
+  font-family: var(--font-h2);  /* TheSecretLibrary */
+  font-size: var(--size-h2);    /* 64px */
+  line-height: 2;             /* 160% */
+  color: var(--color-green-dark);
+}
+
+.intro__body-group {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 768px;
+}
+
+.intro__body {
+  font-family: var(--font-body); /* Lancelot */
+  font-size: 40px;
+  line-height: 1.2;              /* 120% */
+  color: var(--color-green-dark);
+  text-wrap: pretty;
+}
+
+/* Grá Mór illustration
+   right: calc(50% + 422px + 24px) places the illustration's right edge
+   exactly 24px to the left of the body text container's left edge.
+   422px = half of max-width 844px */
+.intro__illustration {
+  position: absolute;
+  bottom: 100px;
+  left: calc(50% + 340px); /* 24px right of body text's right edge */
+}
+
+/* --- Intro responsive --- */
+
+@media (max-width: 1024px) {
+  /* Illustration drops out of absolute flow and stacks below text */
+  #intro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .intro__illustration {
+    position: static;
+    margin-top: 48px;
+  }
+}
