@@ -111,14 +111,21 @@ a {
   --font-flanking: "Cormorant SC", serif;
 
 
-  /* --- Typography: Sizes --- */
-  --size-h1:       72px;
-  --size-h2:       64px;
-  --size-h3:       40px;
-  --size-h4:       24px;
-  --size-body:     24px;
-  --size-body-sm:  18px;
-  --size-flanking: 40px;
+  /* --- Typography: Sizes — fluid scale ---
+     Formula: clamp(min, calc(intercept + slope × 100vw), max)
+     Parameters: min-viewport 375px → max-viewport 1440px (range 1065px)
+     slope = (max − min) / 1065 | intercept = min − slope × 375
+     Never hardcode a px font-size in section CSS — always use these tokens. */
+  --size-h1:       clamp(48px, calc(39.6px + 2.25vw), 72px);
+  --size-h2:       clamp(40px, calc(31.6px + 2.25vw), 64px);
+  --size-h3:       clamp(28px, calc(23.8px + 1.13vw), 40px);
+  --size-h4:       clamp(20px, calc(18.6px + 0.38vw), 24px);
+  --size-body:     clamp(18px, calc(15.9px + 0.56vw), 24px);
+  --size-body-sm:  clamp(16px, calc(15.3px + 0.19vw), 18px);
+  --size-flanking: clamp(20px, 2.5vw, 40px);
+  /* NOTE: flanking uses a viewport-proportional slope (not the standard intercept formula)
+     because its column width is also fluid. The standard formula makes it too large at
+     mid-viewport widths, causing "WEDDING WEEKEND" to wrap before the 1100px breakpoint. */
 
 
   /* --- Typography: Line heights (never use 'normal') --- */
@@ -134,7 +141,7 @@ a {
 
 
   /* --- Spacing --- */
-  --page-padding:   24px;   /* Global horizontal padding */
+  --page-padding:   clamp(24px, calc(18.4px + 1.5vw), 40px);   /* Global horizontal padding */
   --padding-sm:     16px;
   --max-width-xl:   1280px;
   --max-width-lg:   768px;
@@ -143,8 +150,8 @@ a {
   /* --- Hero oval sizing ---
      Change portrait dimensions to resize the whole frame.
      All ring sizes derive from these via calc(). */
-  --hero-portrait-w: 525px;
-  --hero-portrait-h: 684px;
+  --hero-portrait-w: clamp(220px, 30vw, 525px);
+  --hero-portrait-h: clamp(286px, 39.1vw, 684px);
   --hero-gap:        12px;  /* Each side gap: portrait→inner, inner→middle, middle→outer */
   --hero-gap-outer:   8px;  /* Each side gap: outer→dashed ring */
 
@@ -162,18 +169,9 @@ a {
 
 
 /* ------------------------------------------------------------
-   4. Mobile typography overrides
+   4. Mobile overrides
+   Typography sizes are handled by clamp() in :root — no overrides needed here.
    ------------------------------------------------------------ */
-
-@media (max-width: 640px) {
-  :root {
-    --size-h1:      48px;
-    --size-h2:      40px;
-    --size-h3:      28px;
-    --size-body:    18px;
-    --page-padding: 24px;
-  }
-}
 
 
 /* ------------------------------------------------------------
@@ -193,6 +191,39 @@ body {
 
   /* Prevent horizontal overflow caused by animations */
   overflow-x: hidden;
+}
+
+
+/* ------------------------------------------------------------
+   5b. Global heading base styles
+   These ensure every h1–h4 anywhere on the page gets the right
+   font and fluid size automatically. Per-section rules only need
+   to override properties that differ (e.g. color, position).
+   ------------------------------------------------------------ */
+
+h1 {
+  font-family: var(--font-h1); /* TheSecretLibrary */
+  font-size: var(--size-h1);   /* clamp(48px → 72px) */
+  line-height: var(--leading-h1);
+}
+
+h2 {
+  font-family: var(--font-h2); /* TheSecretLibrary */
+  font-size: var(--size-h2);   /* clamp(40px → 64px) */
+  line-height: var(--leading-h2);
+}
+
+h3 {
+  font-family: var(--font-h3); /* Recoleta */
+  font-size: var(--size-h3);   /* clamp(28px → 40px) */
+  line-height: var(--leading-h3);
+}
+
+h4 {
+  font-family: var(--font-h4);        /* Recoleta */
+  font-size: var(--size-h4);          /* clamp(20px → 24px) */
+  font-weight: var(--font-h4-weight); /* 600 = SemiBold */
+  line-height: var(--leading-h4);     /* 1.5 */
 }
 
 
@@ -249,7 +280,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 40px;
   padding: 0 var(--page-padding);
   overflow: hidden; /* Clip animation overflow */
   position: relative; /* Required for ::after texture overlay to anchor here */
@@ -326,7 +357,8 @@ body {
      1px -1px 2px 0 rgba(255, 255, 255, 0.20) inset;
 }
 
-/* Portrait — sits above oval rings via z-index */
+/* Portrait — sits above oval rings via z-index.
+   overflow: hidden + border-radius: 50% clips any content (including the h1) to the oval shape. */
 .hero__portrait {
   width:  var(--hero-portrait-w);
   height: var(--hero-portrait-h);
@@ -334,51 +366,53 @@ body {
   background-color: var(--color-green-mid); /* Placeholder — replace with <img> */
   overflow: hidden;
   z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Name overlay — topmost layer. Width matches portrait so text wraps inside it */
+/* Names — lives inside .hero__portrait so oval clips it naturally.
+   padding: 0 24px enforces 24px gap from the oval edge on each side.
+   font-family inherited from global h1 rule. */
 .hero__names {
-  font-family: var(--font-h1);
-  font-size: var(--size-h1);
+  /* Scale with the oval. Capped at --size-h1 so it never exceeds the token. */
+  font-size: clamp(24px, calc(var(--hero-portrait-w) * 0.15), var(--size-h1));
   line-height: var(--leading-h1);
   color: var(--color-cream);
   text-align: center;
-  max-width: var(--hero-portrait-w);
-  z-index: 2;
+  width: 100%;
+  padding: 0 24px;
 }
 
 /* --- Hero responsive --- */
 
-@media (max-width: 1024px) {
+@media (max-width: 1100px) {
+  :root {
+    /* Oval constrained by BOTH available width and available height so everything
+       fits inside the fixed 100vh section.
+       368px = vertical overhead: padding(80) + flanking text(120) + gaps(80) + ring frame(88). */
+    --hero-portrait-w: min(
+      calc((100vh - 368px) / 1.302),
+      calc(100vw - 2 * var(--page-padding) - 104px),
+      525px
+    );
+    --hero-portrait-h: calc(var(--hero-portrait-w) * 1.302);
+  }
+
   #hero {
     flex-direction: column;
     justify-content: center;
     gap: 40px;
-    padding-top: 60px;
-    padding-bottom: 60px;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    /* height: 100vh inherited from base styles — not overridden here */
   }
 
-  /* In column layout flex: 1 affects height, not width.
-     Set explicit width so text doesn't overflow the section. */
+  /* In column layout flex: 1 would stretch flanking items vertically, creating
+     uneven gaps. flex: none lets them shrink to their natural text height. */
   .hero__flanking {
+    flex: none;
     width: 100%;
-    font-size: 24px;
-  }
-}
-
-/* Mobile: portrait size changes + hero vertical padding so text doesn't touch the edge */
-@media (max-width: 640px) {
-  #hero {
-    padding-top: 24px;
-    padding-bottom: 24px;
-    /* Allow section to grow taller than 100vh if content needs the space */
-    height: auto;
-    min-height: 100vh;
-  }
-
-  :root {
-    --hero-portrait-w: 260px;
-    --hero-portrait-h: 328px;
   }
 }
 
@@ -404,9 +438,6 @@ body {
 }
 
 #intro-heading {
-  font-family: var(--font-h2);  /* TheSecretLibrary */
-  font-size: var(--size-h2);    /* 64px */
-  line-height: var(--leading-h2);
   color: var(--color-green-dark);
 }
 
@@ -419,7 +450,7 @@ body {
 
 .intro__body {
   font-family: var(--font-body); /* Lancelot */
-  font-size: 40px;
+  font-size: var(--size-h3); /* clamp(28px → 40px) — large intro body, same scale as h3 */
   line-height: 1.2;              /* 120% */
   color: var(--color-green-dark);
   text-wrap: pretty;
@@ -468,14 +499,11 @@ body {
   padding: 180px var(--page-padding);
 }
 
-/* "Our Story" heading — cream, absolute top-left. Uses the standard h2 token. */
+/* "Our Story" heading — cream, absolute top-left */
 .our-story__heading {
   position: absolute;
   top: 80px;
   left: var(--page-padding);
-  font-family: var(--font-h2); /* TheSecretLibrary */
-  font-size: var(--size-h2);
-  line-height: var(--leading-h2);
   color: var(--color-cream);
   /* Soft shadow helps legibility against the painting's light areas */
   text-shadow: 0 2px 24px rgba(0, 0, 0, 0.20);
@@ -533,7 +561,7 @@ body {
   text-align: center;
   white-space: nowrap; /* Prevent wrapping to a third line */
   font-family: var(--font-h2); /* TheSecretLibrary */
-  font-size: 24px;
+  font-size: var(--size-h4); /* clamp(20px → 24px) */
   line-height: 1.3;
   color: var(--color-green-dark);
 }
@@ -557,7 +585,6 @@ body {
   position: absolute;
   width: 55%;
   height: auto;
-  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.25));
 }
 
 /* --- Ashley's stamps: America (landscape), Florida (square), Cherub (portrait) ---
@@ -637,9 +664,142 @@ body {
     height: 200px;
   }
 
-  .envelope__address {
-    font-size: 22px;
-  }
+  /* .envelope__address font-size handled by var(--size-h4) clamp — no override needed */
 
   /* Stamps scale automatically via % widths — no px override needed */
+}
+
+/* ============================================================
+   SECTION 4 — PROPOSAL PHOTO
+   Full-bleed image, no padding, no text.
+   ANIMATION PLAN (future session):
+   - #proposal will be pinned/sticky via GSAP ScrollTrigger
+   - Starts at translateY(100vh), slides up to translateY(0)
+   - Triggered at the end of #our-story scrolling past viewport
+   - Effect: proposal photo "covers" Our Story as user scrolls
+   ============================================================ */
+
+#proposal {
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+  /* Will become position: sticky / GSAP pin for scroll animation */
+}
+
+.proposal__photo {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* ============================================================
+   SHARED — EVENT SECTION
+   Used by: #welcome-dublin (s5), #night-before (s6), #day-two (s8)
+   ============================================================ */
+
+.event-section {
+  padding: 180px var(--page-padding);
+}
+
+/* --- Header row: title left, date + badge stacked right --- */
+
+.event-section__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 40px;
+  margin-bottom: 80px;
+}
+
+.event-section__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 16px;
+  flex-shrink: 0; /* prevents meta from squishing when h2 is long */
+}
+
+.event-section__date {
+  font-family: var(--font-h3); /* Recoleta */
+  font-size: clamp(16px, calc(13.5px + 0.7vw), 24px); /* 24px max — smaller than h3's 40px */
+  font-weight: 600;            /* SemiBold */
+  line-height: 1;
+  text-transform: uppercase;
+  text-align: right;
+}
+
+.event-section__badge {
+  display: inline-block;
+  font-family: var(--font-h4); /* Recoleta */
+  font-size: var(--size-body-sm); /* clamp(16px → 18px) — smaller than before */
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 8px 12px;
+  border: 1.5px solid var(--color-green-dark);
+  line-height: 1;
+}
+
+/* --- Body: 2-column grid, each col max 768px --- */
+
+.event-section__body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+}
+
+.event-section__col {
+  max-width: 768px;
+}
+
+/* Direct-child spacing only — avoids bleeding into schedule items */
+.event-section__col > h4 {
+  margin-bottom: 8px;
+}
+
+.event-section__col > p {
+  margin-bottom: 32px;
+}
+
+/* --- Schedule (time + event rows within a col) ---
+   Parent grid: max-content col 1 = width of the widest time
+   string, so all descriptions stay left-aligned across rows.
+   display: contents on items makes them transparent to the grid
+   (their children become the actual grid cells).
+   Divider is an explicit <hr> with grid-column: 1 / -1 so it
+   spans both columns as a single unbroken line. */
+
+.event-section__schedule {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  column-gap: 24px;
+  margin-bottom: 32px;
+}
+
+.event-section__schedule-item {
+  display: contents;
+}
+
+.event-section__schedule-item > * {
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.event-section__divider {
+  grid-column: 1 / -1; /* spans both columns — single unbroken line */
+  border: none;
+  border-top: 1px solid rgba(67, 70, 31, 0.25);
+  margin: 0;
+}
+
+.event-section__time {
+  font-family: var(--font-h4); /* Recoleta Regular */
+  font-size: var(--size-h4);   /* clamp(20px → 24px) */
+  font-weight: 400;
+  line-height: var(--leading-h4);
+  white-space: nowrap; /* time string never wraps mid-line */
+}
+
+.event-section__note {
+  font-size: var(--size-body-sm); /* clamp(16px → 18px) — supplementary detail */
+  margin-top: 8px;
 }

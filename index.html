@@ -65,16 +65,12 @@
       <!-- Inner ring — inset shadows, tightest around portrait -->
       <div class="hero__oval hero__oval--inner" aria-hidden="true"></div>
 
-      <!-- Portrait — sits above ovals via z-index, clips to oval shape.
-           Replace this <div> with an <img> when the real portrait is ready. -->
-      <div
-        class="hero__portrait"
-        role="img"
-        aria-label="Ashley and Eoin"
-      ></div>
-
-      <!-- Name overlay — topmost layer -->
-      <h1 class="hero__names">Ashley <br /> &amp; Eoin</h1>
+      <!-- Portrait — clips content to oval shape via overflow: hidden + border-radius.
+           The names h1 lives inside so it's naturally contained by the oval.
+           Replace the background-color with a real <img> when the portrait is ready. -->
+      <div class="hero__portrait">
+        <h1 class="hero__names">Ashley <br /> &amp;&nbsp;Eoin</h1>
+      </div>
 
     </div>
 
@@ -178,14 +174,17 @@
 
   <!-- ============================================================
        SECTION 4 — Proposal Photo
-       Full-height photo. Zero text. Parallax scroll effect later.
+       Full-bleed 100vw photo. No text.
+       ANIMATION (future): sticky/GSAP pin — slides up from below to
+       cover #our-story as user scrolls past it. ScrollTrigger trigger
+       = end of #our-story, scrub, translateY(100vh → 0).
   ============================================================ -->
   <section id="proposal" aria-label="Proposal photo">
     <img
-      src="images/proposal-muckross.jpg"
-      alt="Ashley and Eoin at Muckross House during their proposal"
-      width="1920"
-      height="1080"
+      src="images/proposal-image.webp"
+      alt="Ashley and Eoin at the moment of their proposal"
+      width="3000"
+      height="2250"
       class="proposal__photo"
     />
   </section>
@@ -194,9 +193,9 @@
   <!-- ============================================================
        SECTION 5 — Welcome to Dublin
        Wednesday, August 19th. Attendance optional.
-       Background: #efe6d3
   ============================================================ -->
-  <section id="welcome-dublin" aria-labelledby="dublin-heading">
+  <section id="welcome-dublin" class="event-section" aria-labelledby="dublin-heading">
+
     <header class="event-section__header">
       <h2 id="dublin-heading">Welcome to Dublin</h2>
       <div class="event-section__meta">
@@ -205,24 +204,51 @@
       </div>
     </header>
 
-    <div class="event-section__content">
-      <!-- Left column: description -->
-      <div class="event-section__description">
-        <p>Placeholder: Who's invited and what to expect.</p>
+    <div class="event-section__body">
+
+      <!-- Left column: intro -->
+      <div class="event-section__col">
+        <h4>Let the celebrations begin</h4>
+        <p>The Irish may be known for their goodbyes but just wait until you experience their warm welcomes. Whether you're traveling from near or far, we'd love to kick off the wedding weekend with a bit of culture and craic. Join us for welcome pints at the Guinness factory, live music, and meet friends and family you'll be spending the weekend with.</p>
       </div>
-      <!-- Right column: time, schedule, location -->
-      <div class="event-section__logistics">
-        <p>Placeholder: Time, schedule, and location details.</p>
+
+      <!-- Right column: details -->
+      <div class="event-section__col">
+
+        <h4>Who's invited?</h4>
+        <p>Everyone! We know you all have different travel schedules, so please don't feel any pressure to attend. But if you find yourself in town early, we'd love to see you and toast to the start of a beautiful weekend together.</p>
+
+        <h4>Time</h4>
+        <div class="event-section__schedule">
+          <div class="event-section__schedule-item">
+            <span class="event-section__time">3:00 – 5:00 pm</span>
+            <div>
+              <p>Welcome pints at The Guinness Storehouse</p>
+              <p class="event-section__note">Feel free to book a tour just ahead if you'd like to visit the experience. It typically lasts 90 minutes.</p>
+            </div>
+          </div>
+          <hr class="event-section__divider" />
+          <div class="event-section__schedule-item">
+            <span class="event-section__time">8:30 pm</span>
+            <p>Drinks and live music at Keogh's*</p>
+          </div>
+        </div>
+
+        <h4>Location</h4>
+        <p>The Guinness Storehouse | St. James's Gate, Dublin 8, D08 VF8H<br>
+        Keogh's | 9 Anne St S, Dublin, D02 NY88</p>
+
       </div>
     </div>
 
-    <!-- 4-image strip below section content -->
+    <!-- Image strip — placeholder, images TBD -->
     <div class="event-section__image-strip" aria-hidden="true">
       <img src="images/dublin-1.jpg" alt="" width="480" height="280" />
       <img src="images/dublin-2.jpg" alt="" width="480" height="280" />
       <img src="images/dublin-3.jpg" alt="" width="480" height="280" />
       <img src="images/dublin-4.jpg" alt="" width="480" height="280" />
     </div>
+
   </section>
 
 
