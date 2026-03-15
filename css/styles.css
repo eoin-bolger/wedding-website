@@ -117,7 +117,7 @@ a {
      slope = (max − min) / 1065 | intercept = min − slope × 375
      Never hardcode a px font-size in section CSS — always use these tokens. */
   --size-h1:       clamp(48px, calc(39.6px + 2.25vw), 72px);
-  --size-h2:       clamp(40px, calc(31.6px + 2.25vw), 64px);
+  --size-h2:       clamp(40px, calc(34.4px + 1.50vw), 56px);
   --size-h3:       clamp(28px, calc(23.8px + 1.13vw), 40px);
   --size-h4:       clamp(20px, calc(18.6px + 0.38vw), 24px);
   --size-body:     clamp(18px, calc(15.9px + 0.56vw), 24px);
@@ -785,10 +785,9 @@ h4 {
 }
 
 .event-section__divider {
-  grid-column: 1 / -1; /* spans both columns — single unbroken line */
+  grid-column: 1 / -1; /* spans both schedule columns */
   border: none;
   border-top: 1px solid rgba(67, 70, 31, 0.25);
-  margin: 0;
 }
 
 .event-section__time {
@@ -802,4 +801,370 @@ h4 {
 .event-section__note {
   font-size: var(--size-body-sm); /* clamp(16px → 18px) — supplementary detail */
   margin-top: 8px;
+}
+
+
+/* ============================================================
+   PHOTO STRIP — reusable full-width image breaker
+   Appears between sections. Each instance has a unique ID for
+   targeting different images. Placeholder bg-colors show when
+   src is empty — they'll disappear behind real photos.
+   ============================================================ */
+
+.photo-strip {
+  display: flex;
+  gap: 8px;
+  background: var(--color-cream); /* gap colour = cream background showing through */
+}
+
+.photo-strip__item {
+  flex: 1;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+/* Placeholder colours — visible until real photos replace them */
+.photo-strip__item:nth-child(odd)  { background-color: #c8cbab; } /* light sage */
+.photo-strip__item:nth-child(even) { background-color: #d9cdb5; } /* warm sand */
+
+.photo-strip__item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+
+/* ============================================================
+   SECTION 7 — OUR WEDDING DAY
+   Four visual zones: upper (dark green) | timeline (cream) |
+   full-bleed photo | venue (dark green).
+   Each zone manages its own padding and background.
+   ============================================================ */
+
+#wedding-day {
+  background-color: var(--color-green-dark);
+}
+
+
+/* --- Zone 1: Upper — header + 3-col + attire (dark green) --- */
+
+.wedding-day__upper {
+  padding: 180px var(--page-padding) 0;
+  color: var(--color-cream);
+}
+
+.wedding-day__header {
+  text-align: center;
+  margin-bottom: 80px;
+}
+
+.wedding-day__overline {
+  font-family: var(--font-h4);
+  font-size: clamp(16px, calc(13.5px + 0.7vw), 24px);
+  font-weight: 600;
+  line-height: 1;
+  text-transform: uppercase;
+  margin-bottom: 40px; /* Increased for visible breathing room before h2 */
+}
+
+/* Three-column: equal 1fr widths, items vertically centred */
+.wedding-day__three-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+/* Left column: Recoleta Regular pull quote, all caps, centred.
+   Font-size scales so the longest line ("UNFOLDS HERE", 12 chars) fills the column.
+   Formula: column-width ÷ (12 chars × ~0.7em avg char width) = ÷ 25.
+   Adjust divisor if lines overflow (increase) or fall short (decrease). */
+.wedding-day__pull {
+  font-family: var(--font-h4);
+  font-size: clamp(32px, calc((100vw - 2 * var(--page-padding) - 120px) / 25), 56px);
+  font-weight: 400;
+  line-height: 1.1;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+/* Centre column: 3:4 portrait crop.
+   Wrapper div owns the aspect-ratio — more reliable than putting it on <img>
+   directly, which can fight with the HTML width/height attributes during resize. */
+.wedding-day__fountain-wrap {
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+}
+
+.wedding-day__fountain-photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Right column: centred text */
+.wedding-day__col--right {
+  text-align: center;
+}
+
+/* Vertical divider: short decorative line, centred */
+.wedding-day__divider {
+  width: 1px;
+  height: 60px;
+  background-color: rgba(239, 230, 211, 0.4);
+  margin: 80px auto;
+}
+
+/* Last divider sits flush at the bottom edge of the upper zone —
+   no gap between it and the cream timeline section below. */
+.wedding-day__upper > .wedding-day__divider:last-child {
+  margin-bottom: 0;
+}
+
+/* Attire block: centred */
+.wedding-day__attire {
+  text-align: center;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* --size-h3 hits 40px max as requested */
+.wedding-day__attire-label {
+  font-family: var(--font-h4);
+  font-size: var(--size-h3);
+  font-weight: 400;
+  line-height: 1.4;
+  text-transform: uppercase;
+  text-wrap: balance;
+  margin-bottom: 8px;
+}
+
+.wedding-day__attire-body {
+  text-wrap: pretty;
+  margin-bottom: 24px;
+}
+
+.wedding-day__attire-link a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+
+/* --- Zone 2: Timeline (cream background) --- */
+
+.wedding-day__timeline-section {
+  background-color: var(--color-cream);
+  padding: 120px var(--page-padding);
+  position: relative; /* Anchor for the full-height centre divider */
+}
+
+/* Divider runs full height of the section (including padding),
+   not just the height of the grid. */
+.wedding-day__timeline-section::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-color: rgba(67, 70, 31, 0.25);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+/* Two independent flex columns side by side.
+   Right column offset downward (padding-top) so items alternate
+   rather than aligning in rows. */
+.wedding-day__timeline {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.timeline__col {
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+}
+
+/* 80px gap from centre divider on each side.
+   align-items: flex-end pushes each event to the right (toward divider). */
+.timeline__col--left {
+  padding-right: 80px;
+  align-items: flex-end;
+}
+
+.timeline__col--right {
+  padding-left: 80px;
+  padding-top: 120px; /* Stagger: offsets right col to alternate with left */
+}
+
+/* Left items: image on left, text right-aligned (faces centre) */
+.timeline__col--left .timeline__event {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.timeline__col--left .timeline__text {
+  text-align: right;
+}
+
+/* Right items: text left-aligned (faces centre), image on right */
+.timeline__col--right .timeline__event {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.timeline__col--right .timeline__text {
+  text-align: left;
+}
+
+.timeline__photo {
+  width: clamp(80px, 8vw, 130px);
+  height: auto;
+  flex-shrink: 0;
+}
+
+.timeline__time {
+  display: block;
+  font-family: var(--font-h4);
+  font-size: var(--size-body-sm);
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--color-green-dark);
+  margin-bottom: 24px; /* Space between time and event name */
+}
+
+/* Overrides global h3 font-family (Recoleta) — TheSecretLibrary needed here */
+.timeline__label {
+  font-family: var(--font-h2);
+  font-size: var(--size-h4); /* Reduced: 20→24px */
+  line-height: 1;
+  color: var(--color-green-dark);
+}
+
+
+/* --- Zone 3: Full-bleed venue photo --- */
+
+/* 32px dark green inset on top/left/right.
+   height: 70vh gives consistent screen presence.
+   object-position: center 35% frames house + top of pool (portrait source). */
+.wedding-day__venue-photo {
+  display: block;
+  width: calc(100% - 64px);
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  object-position: center 60%;
+  margin: 32px 32px 0;
+}
+
+
+/* --- Zone 4: Venue sub-section (dark green) --- */
+
+.wedding-day__venue {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  padding: 64px var(--page-padding) 180px;
+  align-items: start;
+}
+
+.venue__overline {
+  font-family: var(--font-h4);
+  font-size: var(--size-body-sm);
+  font-weight: 600;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--color-cream);
+  letter-spacing: 0.05em;
+  margin-bottom: 16px;
+}
+
+.venue__name {
+  color: var(--color-cream);
+}
+
+.venue__right {
+  max-width: 768px;
+}
+
+.venue__body {
+  color: var(--color-cream);
+  margin-bottom: 32px;
+}
+
+.venue__location-label {
+  font-family: var(--font-h4);
+  font-size: var(--size-body);
+  font-weight: 600;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--color-cream);
+  letter-spacing: 0.05em;
+  margin-top: 40px;
+  margin-bottom: 8px;
+}
+
+.venue__address {
+  font-size: var(--size-body);
+  color: var(--color-cream);
+}
+
+
+/* --- Section 7 responsive --- */
+
+@media (max-width: 1100px) {
+
+  .wedding-day__three-col {
+    grid-template-columns: 1fr;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .wedding-day__col--centre { order: -1; }
+
+  .wedding-day__timeline-section {
+    padding: 80px var(--page-padding);
+  }
+
+  .timeline__col--left  { padding-right: 40px; }
+  .timeline__col--right { padding-left: 40px; padding-top: 80px; }
+
+  .wedding-day__venue {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+@media (max-width: 640px) {
+
+  /* Stack both columns into a single column */
+  .wedding-day__timeline {
+    grid-template-columns: 1fr;
+  }
+
+  .wedding-day__timeline::before { display: none; }
+
+  .timeline__col--left  { padding-right: 0; }
+  .timeline__col--right { padding-left: 0; padding-top: 0; }
+
+  /* Right col: reorder to match left (image left, text right) */
+  .timeline__col--right .timeline__event {
+    flex-direction: row-reverse;
+  }
+
+  .timeline__col--right .timeline__text {
+    text-align: left;
+  }
+
+  .wedding-day__venue-photo {
+    height: 50vh;
+    width: calc(100% - 32px);
+    margin: 16px 16px 0;
+  }
+
 }

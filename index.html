@@ -100,7 +100,7 @@
 
     <!-- Grá Mór illustration — absolute, 24px left of body text, 136px from bottom -->
     <img
-      src="images/gra-mor-illustration.png"
+      src="images/gra-mor-illustration.webp"
       alt=""
       width="320"
       height="239"
@@ -241,14 +241,27 @@
       </div>
     </div>
 
-    <!-- Image strip — placeholder, images TBD -->
-    <div class="event-section__image-strip" aria-hidden="true">
-      <img src="images/dublin-1.jpg" alt="" width="480" height="280" />
-      <img src="images/dublin-2.jpg" alt="" width="480" height="280" />
-      <img src="images/dublin-3.jpg" alt="" width="480" height="280" />
-      <img src="images/dublin-4.jpg" alt="" width="480" height="280" />
-    </div>
+  </section>
 
+
+  <!-- ============================================================
+       PHOTO STRIP — Dublin
+       Full-width 4-image breaker between Section 5 and Section 6.
+       Replace src attributes when photos are ready.
+  ============================================================ -->
+  <section class="photo-strip" id="photo-strip-dublin" aria-hidden="true">
+    <div class="photo-strip__item">
+      <img src="" alt="" width="16" height="9">
+    </div>
+    <div class="photo-strip__item">
+      <img src="" alt="" width="16" height="9">
+    </div>
+    <div class="photo-strip__item">
+      <img src="" alt="" width="16" height="9">
+    </div>
+    <div class="photo-strip__item">
+      <img src="" alt="" width="16" height="9">
+    </div>
   </section>
 
 
@@ -257,7 +270,7 @@
        Thursday, August 20th. Attendance optional.
        Background: #efe6d3
   ============================================================ -->
-  <section id="night-before" aria-labelledby="night-before-heading">
+  <section id="night-before" class="event-section" aria-labelledby="night-before-heading">
     <header class="event-section__header">
       <h2 id="night-before-heading">The Night Before</h2>
       <div class="event-section__meta">
@@ -266,21 +279,53 @@
       </div>
     </header>
 
-    <div class="event-section__content">
-      <div class="event-section__description">
-        <p>Placeholder: The Fisherman's pub details and who's invited.</p>
+    <div class="event-section__body">
+
+      <!-- Left column: intro -->
+      <div class="event-section__col">
+        <h4>Welcome pints in the country</h4>
+        <p>Meet us for a cozy night in the country at The Fisherman's Thatched Inn, a charming 300-year-old thatched-roof pub and proud stop along Ireland's Whiskey Trail. The quiet road it sits on follows the route St Patrick is said to have traveled back in 450 A.D. This night marks the official start of our wedding weekend, and we can't wait to share it with you!</p>
       </div>
-      <div class="event-section__logistics">
-        <p>Placeholder: Time, schedule, and location details.</p>
+
+      <!-- Right column: details -->
+      <div class="event-section__col">
+
+        <h4>Who's invited?</h4>
+        <p>Everyone is welcome! Little ones included.</p>
+
+        <h4>Time</h4>
+        <div class="event-section__schedule">
+          <div class="event-section__schedule-item">
+            <span class="event-section__time">7:30 – 10:00 pm</span>
+          </div>
+        </div>
+
+        <h4>Location</h4>
+        <p>The Fisherman's Thatched Inn | Fisherstown, Ballybrittas, Co. Laois, R32 CR22</p>
+
       </div>
     </div>
 
-    <!-- 4-image strip -->
-    <div class="event-section__image-strip" aria-hidden="true">
-      <img src="images/fishermans-1.jpg" alt="" width="480" height="280" />
-      <img src="images/fishermans-2.jpg" alt="" width="480" height="280" />
-      <img src="images/fishermans-3.jpg" alt="" width="480" height="280" />
-      <img src="images/fishermans-4.jpg" alt="" width="480" height="280" />
+  </section>
+
+
+  <!-- ============================================================
+       PHOTO STRIP — Night Before
+       Full-width 4-image breaker between Section 6 and Section 7.
+       Replace src attributes when photos are ready.
+  ============================================================ -->
+  <section class="photo-strip" id="photo-strip-nightbefore" aria-hidden="true">
+    <div class="photo-strip__item">
+      <img src="" alt="" width="16" height="9">
+    </div>
+    <div class="photo-strip__item">
+      <img src="" alt="" width="16" height="9">
+    </div>
+    <div class="photo-strip__item">
+      <img src="" alt="" width="16" height="9">
+    </div>
+    <div class="photo-strip__item">
+      <img src="" alt="" width="16" height="9">
     </div>
   </section>
 
@@ -290,103 +335,180 @@
        Friday, August 21st. Dark green. 3-col layout. Timeline.
        The Venue is embedded at the bottom of this section.
        Background: #43461f
+
+       Structure: four visual zones, each handles its own padding
+       and background — upper (dark green) | timeline (cream) |
+       full-bleed photo | venue (dark green).
   ============================================================ -->
   <section id="wedding-day" aria-labelledby="wedding-day-heading">
 
-    <!-- Date overline + heading -->
-    <p class="wedding-day__overline">Friday, August 21st</p>
-    <h2 id="wedding-day-heading">Our Wedding Day</h2>
+    <!-- ── Zone 1: Header + 3-col + attire (dark green) ─────── -->
+    <div class="wedding-day__upper">
 
-    <!-- Three-column: venue text | fountain photo | attire -->
-    <div class="wedding-day__three-col">
-      <div class="wedding-day__col wedding-day__col--left">
-        <p>Placeholder: Venue intro text — "The Heart of Our Story Unfolds Here"</p>
+      <!-- Centred overline + heading -->
+      <div class="wedding-day__header">
+        <p class="wedding-day__overline">Friday, August 21st</p>
+        <h2 id="wedding-day-heading">Our Wedding Day</h2>
       </div>
-      <div class="wedding-day__col wedding-day__col--centre">
-        <img
-          src="images/ballintubbert-fountain.jpg"
-          alt="The fountain at Ballintubbert Gardens"
-          width="560"
-          height="700"
-          class="wedding-day__fountain-photo"
-        />
+
+      <!-- Three equal columns: pull quote | photo | intro copy -->
+      <div class="wedding-day__three-col">
+
+        <div class="wedding-day__col wedding-day__col--left">
+          <p class="wedding-day__pull">The heart of<br>our story<br>unfolds here</p>
+        </div>
+
+        <div class="wedding-day__col wedding-day__col--centre">
+          <div class="wedding-day__fountain-wrap">
+            <img
+              src="images/ballintubbert-fountain.webp"
+              alt="The formal fountain garden at Ballintubbert"
+              width="840"
+              height="717"
+              class="wedding-day__fountain-photo"
+            />
+          </div>
+        </div>
+
+        <div class="wedding-day__col wedding-day__col--right">
+          <p>Ballintubbert Gardens &amp; House is a historic Georgian estate set on 14 acres of enchanting formal gardens in County Laois, Ireland. On August 21st, we'll gather in the Fountain Gardens to exchange our vows — surrounded by century-old hedgerows and everyone we love most.</p>
+        </div>
+
+      </div><!-- /.wedding-day__three-col -->
+
+      <div class="wedding-day__divider" aria-hidden="true"></div>
+
+      <!-- Attire — centred text block -->
+      <div class="wedding-day__attire">
+        <p class="wedding-day__attire-label">Attire — "Formal Garden Elegance"</p>
+        <p class="wedding-day__attire-body">Think dressed up, not buttoned up for our elegant garden evening inspired by the Irish countryside. Flowing fabrics, florals, and color are welcome — midi or longer dresses, breezy silhouettes, or elegant separates work beautifully. For men, suits, blazers, or dress shirts in light fabrics like linen or cotton are perfect; ties optional. Shoes suitable for grass are recommended. Please avoid white or ivory. This is just a guide — please dress in whatever feels most like you.</p>
+        <p class="wedding-day__attire-link">Sample attire on Pinterest: <a href="https://pin.it/anyFvnEvM" target="_blank" rel="noopener noreferrer">pin.it/anyFvnEvM</a></p>
       </div>
-      <div class="wedding-day__col wedding-day__col--right">
-        <p>Placeholder: Attire copy — Formal Garden Elegance</p>
-      </div>
-    </div>
 
-    <hr class="wedding-day__divider" />
+      <div class="wedding-day__divider" aria-hidden="true"></div>
 
-    <!-- Attire label -->
-    <div class="wedding-day__attire">
-      <p class="wedding-day__attire-label">Attire — Formal Garden Elegance</p>
-      <p>Placeholder: Attire description.</p>
-    </div>
+    </div><!-- /.wedding-day__upper -->
 
-    <hr class="wedding-day__divider" />
 
-    <!-- Timeline -->
-    <div class="wedding-day__timeline" role="list" aria-label="Order of the day">
+    <!-- ── Zone 2: Timeline (cream background) ───────────────── -->
+    <div class="wedding-day__timeline-section">
 
-      <article class="timeline__event timeline__event--left" role="listitem">
-        <time class="timeline__time">1:15 pm</time>
-        <h3 class="timeline__label">Arrival</h3>
-        <img src="images/timeline-arrival.jpg" alt="Ballintubbert house" width="200" height="150" class="timeline__photo" />
-      </article>
+      <!-- Two independent flex columns. Right column is offset down (padding-top)
+           so items visually alternate rather than aligning in rows.
+           The vertical centre line is drawn by ::before on the wrapper. -->
+      <div class="wedding-day__timeline">
 
-      <article class="timeline__event timeline__event--right" role="listitem">
-        <time class="timeline__time">2:00 pm</time>
-        <h3 class="timeline__label">Ceremony</h3>
-        <img src="images/timeline-ceremony.jpg" alt="Wedding rings" width="200" height="150" class="timeline__photo" />
-      </article>
+        <!-- Left column: Arrival, Toast, Party -->
+        <div class="timeline__col timeline__col--left">
 
-      <article class="timeline__event timeline__event--left" role="listitem">
-        <time class="timeline__time">2:45 pm</time>
-        <h3 class="timeline__label">Toast</h3>
-        <!-- No thumbnail for toast -->
-      </article>
+          <article class="timeline__event">
+            <img src="images/arrival-house.webp" alt="Ballintubbert House illustration" width="600" height="600" class="timeline__photo" />
+            <div class="timeline__text">
+              <time class="timeline__time">1:15 pm</time>
+              <h3 class="timeline__label">Arrival</h3>
+            </div>
+          </article>
 
-      <article class="timeline__event timeline__event--right" role="listitem">
-        <time class="timeline__time">6:00 pm</time>
-        <h3 class="timeline__label">Feast</h3>
-        <img src="images/timeline-feast.jpg" alt="Dinner setting" width="200" height="150" class="timeline__photo" />
-      </article>
+          <article class="timeline__event">
+            <img src="images/toast-tent.webp" alt="Celebration tent illustration" width="600" height="600" class="timeline__photo" />
+            <div class="timeline__text">
+              <time class="timeline__time">2:45 pm</time>
+              <h3 class="timeline__label">Toast</h3>
+            </div>
+          </article>
 
-      <article class="timeline__event timeline__event--left" role="listitem">
-        <time class="timeline__time">9:00 pm</time>
-        <h3 class="timeline__label">Party</h3>
-        <img src="images/timeline-party.jpg" alt="Disco ball" width="200" height="150" class="timeline__photo" />
-      </article>
+          <article class="timeline__event">
+            <img src="images/party-disco.webp" alt="Disco ball illustration" width="600" height="600" class="timeline__photo" />
+            <div class="timeline__text">
+              <time class="timeline__time">9:00 pm</time>
+              <h3 class="timeline__label">Party</h3>
+            </div>
+          </article>
 
-      <article class="timeline__event timeline__event--right" role="listitem">
-        <time class="timeline__time">1:30 am</time>
-        <h3 class="timeline__label">Goodbyes</h3>
-      </article>
+        </div><!-- /.timeline__col--left -->
 
-    </div>
+        <!-- Right column: Ceremony, Feast, Goodbyes — staggered down via padding-top -->
+        <div class="timeline__col timeline__col--right">
 
-    <!-- Full-bleed reflecting pool photo -->
+          <article class="timeline__event">
+            <div class="timeline__text">
+              <time class="timeline__time">2:00 pm</time>
+              <h3 class="timeline__label">Ceremony</h3>
+            </div>
+            <img src="images/ceremony-rings.webp" alt="Wedding rings illustration" width="600" height="600" class="timeline__photo" />
+          </article>
+
+          <article class="timeline__event">
+            <div class="timeline__text">
+              <time class="timeline__time">6:00 pm</time>
+              <h3 class="timeline__label">Feast</h3>
+            </div>
+            <img src="images/feast-dinner.webp" alt="Dinner setting illustration" width="600" height="600" class="timeline__photo" />
+          </article>
+
+          <article class="timeline__event">
+            <div class="timeline__text">
+              <time class="timeline__time">1:30 am</time>
+              <h3 class="timeline__label">Goodbyes</h3>
+            </div>
+            <img src="images/goodbyes-candelabra.webp" alt="Candelabra illustration" width="600" height="600" class="timeline__photo" />
+          </article>
+
+        </div><!-- /.timeline__col--right -->
+
+      </div><!-- /.wedding-day__timeline -->
+
+    </div><!-- /.wedding-day__timeline-section -->
+
+
+    <!-- ── Zone 3: Full-bleed venue photo ────────────────────── -->
     <img
-      src="images/ballintubbert-reflecting-pool.jpg"
-      alt="The reflecting pool at Ballintubbert Gardens"
-      width="1920"
-      height="1080"
-      class="wedding-day__reflecting-pool"
+      src="images/ballintubbert-house.webp"
+      alt="Ballintubbert Gardens and House"
+      width="911"
+      height="1617"
+      class="wedding-day__venue-photo"
     />
 
-    <!-- The Venue sub-section — anchor for nav -->
-    <div id="the-venue" class="wedding-day__venue">
-      <p class="venue__overline">The Venue</p>
-      <h3 class="venue__name">Ballintubbert Gardens &amp; House</h3>
-      <p class="venue__copy">
-        Placeholder: Venue description copy.
-      </p>
-      <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="venue__location-link">
-        County Laois, Ireland — View on Maps
-      </a>
-    </div>
 
+    <!-- ── Zone 4: Venue sub-section (dark green) ────────────── -->
+    <div id="the-venue" class="wedding-day__venue">
+
+      <div class="venue__left">
+        <p class="venue__overline">The Venue</p>
+        <h2 class="venue__name">Ballintubbert<br>Gardens &amp; House</h2>
+      </div>
+
+      <div class="venue__right">
+        <p class="venue__body">The heart of our story unfolds at the stunning Ballintubbert Gardens &amp; House, a historic Georgian estate set on 14 acres of enchanting gardens and sweeping grounds. Once home to celebrated figures such as poet Cecil Day-Lewis and actors Sebastian Shaw and Sir John Thrift, the estate sits on land sacred since Druidic times with a mineral-rich well where people have journeyed for its healing waters for generations.</p>
+        <p class="venue__body">Here, at the Fountain Gardens, we will exchange our vows, hopefully under the warm Irish sun, before an evening filled with love, music, and celebration with all of you.</p>
+        <p class="venue__location-label">Location</p>
+        <p class="venue__address">Ballintubbert House, Ballintubbert, Stradbally, Co. Laois, R14 E954, Ireland</p>
+      </div>
+
+    </div><!-- /.wedding-day__venue -->
+
+  </section>
+
+
+  <!-- ============================================================
+       PHOTO STRIP — Wedding Day
+       Full-width 4-image breaker between Section 7 and Section 8.
+       Replace src attributes when photos are ready.
+  ============================================================ -->
+  <section class="photo-strip" id="photo-strip-wedding" aria-hidden="true">
+    <div class="photo-strip__item">
+      <img src="" alt="" width="16" height="9">
+    </div>
+    <div class="photo-strip__item">
+      <img src="" alt="" width="16" height="9">
+    </div>
+    <div class="photo-strip__item">
+      <img src="" alt="" width="16" height="9">
+    </div>
+    <div class="photo-strip__item">
+      <img src="" alt="" width="16" height="9">
+    </div>
   </section>
 
 
@@ -395,30 +517,46 @@
        Saturday, August 22nd.
        Background: #efe6d3
   ============================================================ -->
-  <section id="day-two" aria-labelledby="day-two-heading">
+  <section id="day-two" class="event-section" aria-labelledby="day-two-heading">
     <header class="event-section__header">
       <h2 id="day-two-heading">Day Two Celebration</h2>
       <div class="event-section__meta">
         <p class="event-section__date">Saturday, August 22nd</p>
+        <span class="event-section__badge">Attendance Optional</span>
       </div>
     </header>
 
-    <div class="event-section__content">
-      <div class="event-section__description">
-        <p>Placeholder: Day Two details and what to expect.</p>
+    <div class="event-section__body">
+
+      <!-- Left column: intro -->
+      <div class="event-section__col">
+        <h4>Red, White &amp; "I Do" BBQ</h4>
+        <p>Stick around and recover with a fun day at the estate as we celebrate married life together with a classic American BBQ. We'll have food, drinks, music, lawn games and will soak up the last moments of our time all together.</p>
       </div>
-      <div class="event-section__logistics">
-        <p>Placeholder: Time, schedule, and location.</p>
+
+      <!-- Right column: details -->
+      <div class="event-section__col">
+
+        <h4>Who's invited?</h4>
+        <p>Everyone's invited to join if you're still around and up for another day together. It's completely optional, as we know many guests may have travel plans.</p>
+
+        <h4>Time</h4>
+        <div class="event-section__schedule">
+          <div class="event-section__schedule-item">
+            <span class="event-section__time">12:00 pm</span>
+            <p>Arrive whenever you're ready, we'll be there all afternoon.</p>
+          </div>
+        </div>
+
+        <h4>Attire</h4>
+        <p>Kick back in your best cowboy boots, hats, denim, and plaid! Think casual, fun and a little bit country — totally optional, so come as you feel most comfortable.</p>
+
+        <h4>Location</h4>
+        <p>Ballintubbert House, Ballintubbert, Stradbally, Co. Laois, R14 E954, Ireland</p>
+
       </div>
     </div>
 
-    <!-- 4-image strip -->
-    <div class="event-section__image-strip" aria-hidden="true">
-      <img src="images/day-two-1.jpg" alt="" width="480" height="280" />
-      <img src="images/day-two-2.jpg" alt="" width="480" height="280" />
-      <img src="images/day-two-3.jpg" alt="" width="480" height="280" />
-      <img src="images/day-two-4.jpg" alt="" width="480" height="280" />
-    </div>
   </section>
 
 
