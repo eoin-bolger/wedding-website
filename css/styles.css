@@ -123,7 +123,7 @@ a {
 
   /* --- Typography: Line heights (never use 'normal') --- */
   --leading-h1:   2;
-  --leading-h2:   1.6;
+  --leading-h2:   2;
   --leading-h3:   1;
   --leading-h4:   1.5;
   --leading-body: 1.6;
@@ -197,23 +197,25 @@ body {
 
 
 /* ------------------------------------------------------------
-   6. Paper texture overlay
-   Fixed pseudo-element covers the full viewport at all times.
-   mix-blend-mode: multiply darkens underlying colours with the
-   texture's grain — light areas of the texture become invisible,
-   dark speckles show through as subtle paper texture.
+   6. Paper texture overlay — section-specific
+   Applied per section using ::after pseudo-elements.
+   position: absolute covers just that section (not the viewport).
+   mix-blend-mode: multiply lets dark texture speckles show through
+   while light areas of the texture become invisible.
+   The section must have position: relative for this to work.
    ------------------------------------------------------------ */
 
-body::after {
+/* Shared texture styles — reused across sections that need it */
+#hero::after {
   content: '';
-  position: fixed;
-  inset: 0; /* shorthand for top/right/bottom/left: 0 */
+  position: absolute;
+  inset: 0;
   background-image: url('../images/background-texture.png');
   background-repeat: repeat;
-  background-size: auto; /* tile at the image's natural size */
+  background-size: auto;
   mix-blend-mode: multiply;
-  pointer-events: none; /* texture must never block clicks or scrolling */
-  z-index: 9998; /* below nav (9999), above everything else */
+  pointer-events: none;
+  z-index: 3; /* above hero content (portrait z-index: 1, names z-index: 2) */
 }
 
 
@@ -250,6 +252,7 @@ body::after {
   gap: 16px;
   padding: 0 var(--page-padding);
   overflow: hidden; /* Clip animation overflow */
+  position: relative; /* Required for ::after texture overlay to anchor here */
 }
 
 /* Left and right flanking text */
@@ -354,10 +357,25 @@ body::after {
     padding-top: 60px;
     padding-bottom: 60px;
   }
+
+  /* In column layout flex: 1 affects height, not width.
+     Set explicit width so text doesn't overflow the section. */
+  .hero__flanking {
+    width: 100%;
+    font-size: 24px;
+  }
 }
 
-/* Mobile: only the portrait size changes — all rings and frame recalculate automatically */
+/* Mobile: portrait size changes + hero vertical padding so text doesn't touch the edge */
 @media (max-width: 640px) {
+  #hero {
+    padding-top: 24px;
+    padding-bottom: 24px;
+    /* Allow section to grow taller than 100vh if content needs the space */
+    height: auto;
+    min-height: 100vh;
+  }
+
   :root {
     --hero-portrait-w: 260px;
     --hero-portrait-h: 328px;
@@ -388,7 +406,7 @@ body::after {
 #intro-heading {
   font-family: var(--font-h2);  /* TheSecretLibrary */
   font-size: var(--size-h2);    /* 64px */
-  line-height: 2;             /* 160% */
+  line-height: var(--leading-h2);
   color: var(--color-green-dark);
 }
 
@@ -431,4 +449,197 @@ body::after {
     position: static;
     margin-top: 48px;
   }
+}
+
+
+/* ============================================================
+   SECTION 3 — OUR STORY (static placeholder)
+   ============================================================ */
+
+#our-story {
+  position: relative;
+  min-height: 100vh;
+  background-image: url('../images/floral-background.webp');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 180px var(--page-padding);
+}
+
+/* "Our Story" heading — cream, absolute top-left. Uses the standard h2 token. */
+.our-story__heading {
+  position: absolute;
+  top: 80px;
+  left: var(--page-padding);
+  font-family: var(--font-h2); /* TheSecretLibrary */
+  font-size: var(--size-h2);
+  line-height: var(--leading-h2);
+  color: var(--color-cream);
+  /* Soft shadow helps legibility against the painting's light areas */
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.20);
+  pointer-events: none;
+}
+
+/* Envelope pair — flex row, centred in the section */
+.our-story__envelopes {
+  display: flex;
+  gap: 80px;
+  align-items: center;
+}
+
+/* Envelope wrapper — handles the tilt.
+   perspective will be added here when the 3D animation is built. */
+.envelope-wrapper--ashley {
+  transform: rotate(-8deg) translateY(30px);
+}
+
+.envelope-wrapper--eoin {
+  transform: rotate(6deg) translateY(-20px);
+}
+
+/* The envelope card */
+.envelope {
+  width: 420px;
+  height: 280px;
+  position: relative;
+}
+
+/* Front face of the envelope — the address side. */
+.envelope__front {
+  width: 100%;
+  height: 100%;
+  background-color: #EFE6D3; /* Fallback colour if texture doesn't load */
+  background-image: url('../images/background-texture-envelope.png');
+  background-repeat: repeat;
+  background-size: auto;
+  border: 1px solid rgba(180, 155, 110, 0.25);
+  border-radius: 4px;
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.35),      /* Main drop shadow */
+    0 2px 8px rgba(0, 0, 0, 0.20),         /* Close shadow for crispness */
+    inset 0 0 50px rgba(67, 70, 31, 0.06); /* Subtle edge darkening */
+  position: relative;
+}
+
+/* Address label — "Ashley's Version" / "Eoin's Version".
+   Positioned center-left like a handwritten envelope address. */
+.envelope__address {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Step 1 moves top-left corner to center, step 2 pulls it back by half its own size */
+  text-align: center;
+  white-space: nowrap; /* Prevent wrapping to a third line */
+  font-family: var(--font-h2); /* TheSecretLibrary */
+  font-size: 24px;
+  line-height: 1.3;
+  color: var(--color-green-dark);
+}
+
+/* Stamp cluster — anchored to top-right corner of the envelope.
+   Percentage dimensions mean the cluster scales automatically
+   when the envelope resizes (e.g. on mobile). */
+.envelope__stamps {
+  position: absolute;
+  top: 8%;
+  right: 5%;
+  width: 38%;  /* ~160px on a 420px envelope */
+  height: 42%; /* ~118px on a 280px envelope */
+}
+
+/* Each stamp is absolutely positioned within the cluster container.
+   Width is a % of the container so it scales with the envelope.
+   filter: drop-shadow() traces the actual stamp outline (unlike
+   box-shadow which follows the rectangular bounding box). */
+.envelope__stamp {
+  position: absolute;
+  width: 55%;
+  height: auto;
+  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.25));
+}
+
+/* --- Ashley's stamps: America (landscape), Florida (square), Cherub (portrait) ---
+   Stacked like they've been placed one by one, each at a slightly different angle. */
+
+/* America flag — behind, lower-left of cluster */
+.envelope-wrapper--ashley .envelope__stamp:nth-child(1) {
+  width: 50%;
+  bottom: 60%;
+  left: 30%;
+  z-index: 1;
+  transform: rotate(-5deg);
+}
+
+/* Florida — behind, upper-right */
+.envelope-wrapper--ashley .envelope__stamp:nth-child(2) {
+  width: 40%;
+  top: -8%;
+  right: -6%;
+  z-index: 2;
+  transform: rotate(8deg);
+}
+
+/* Cherub — front, overlapping both */
+.envelope-wrapper--ashley .envelope__stamp:nth-child(3) {
+  width: 30%;
+  top: 20%;
+  left: 58%;
+  z-index: 3;
+  transform: rotate(-3deg);
+}
+
+/* --- Eoin's stamps: Éire (circular), Hurler (portrait) --- */
+
+/* Éire — behind, lower-left */
+.envelope-wrapper--eoin .envelope__stamp:nth-child(1) {
+  width: 35%;
+  bottom: 35%;
+  left: 50%;
+  z-index: 2;
+  transform: rotate(-4deg);
+}
+
+/* Hurler — front, upper-right */
+.envelope-wrapper--eoin .envelope__stamp:nth-child(2) {
+  width: 30%;
+  top: -5%;
+  right: -3%;
+  z-index: 1;
+  transform: rotate(8deg);
+}
+
+/* Animation scaffolding — not used until the animation session.
+   These elements are in the DOM so we don't rewrite HTML later. */
+.envelope__flap,
+.envelope__letter {
+  display: none;
+}
+
+/* --- Section 3 responsive --- */
+
+@media (max-width: 1024px) {
+  .our-story__envelopes {
+    flex-direction: column;
+    gap: 60px;
+  }
+
+}
+
+@media (max-width: 640px) {
+  .our-story__heading {
+    top: 48px;
+  }
+
+  .envelope {
+    width: 300px;
+    height: 200px;
+  }
+
+  .envelope__address {
+    font-size: 22px;
+  }
+
+  /* Stamps scale automatically via % widths — no px override needed */
 }

@@ -116,34 +116,63 @@
 
 
   <!-- ============================================================
-       SECTION 3 — Our Story ⚠️ DEFERRED (static placeholder)
-       Full bleed floral background. Two open letters side by side.
-       Envelope animation will be added in a separate build phase.
+       SECTION 3 — Our Story ⚠️ STATIC PLACEHOLDER
+       Full bleed floral background. Two envelope fronts side by side.
+       Envelope open/letter animation will be added in a separate build phase.
   ============================================================ -->
   <section id="our-story" aria-labelledby="our-story-heading">
-    <h2 id="our-story-heading">Our Story</h2>
 
-    <div class="our-story__letters">
-      <!-- Ashley's letter — rotated -8deg via CSS -->
-      <article class="our-story__letter our-story__letter--ashley">
-        <h3>Ashley</h3>
-        <p>
-          <!-- Ashley's letter text (lorem ipsum placeholder) -->
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-        </p>
-      </article>
+    <!-- "Our Story" — large cream heading, absolute top-left -->
+    <h2 id="our-story-heading" class="our-story__heading">Our<br />Story</h2>
 
-      <!-- Eoin's letter — rotated +8deg via CSS -->
-      <article class="our-story__letter our-story__letter--eoin">
-        <h3>Eoin</h3>
-        <p>
-          <!-- Eoin's letter text (lorem ipsum placeholder) -->
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-        </p>
-      </article>
+    <!-- Two envelope fronts side by side -->
+    <div class="our-story__envelopes">
+
+      <!-- Ashley's envelope — tilted left -->
+      <div class="envelope-wrapper envelope-wrapper--ashley">
+        <div class="envelope">
+
+          <div class="envelope__front">
+            <!-- Address label — name in TheSecretLibrary, like a handwritten address -->
+            <p class="envelope__address">Ashley's Version</p>
+            <!-- Stamp cluster: American stamps -->
+            <div class="envelope__stamps">
+              <img src="images/stamp_america.webp" alt="" width="96" height="64" class="envelope__stamp" aria-hidden="true" />
+              <img src="images/stamp_florida.webp" alt="" width="64" height="64" class="envelope__stamp" aria-hidden="true" />
+              <img src="images/stamp_cherub.webp" alt="" width="43" height="64" class="envelope__stamp" aria-hidden="true" />
+            </div>
+          </div>
+
+          <!-- Animation scaffolding — hidden, built in a later session -->
+          <div class="envelope__flap" aria-hidden="true"></div>
+          <div class="envelope__letter" aria-hidden="true"></div>
+
+        </div>
+      </div>
+
+      <!-- Eoin's envelope — tilted right -->
+      <div class="envelope-wrapper envelope-wrapper--eoin">
+        <div class="envelope">
+
+          <div class="envelope__front">
+            <!-- Address label -->
+            <p class="envelope__address">Eoin's Version</p>
+            <!-- Stamp cluster: Irish stamps -->
+            <div class="envelope__stamps">
+              <img src="images/stamp_eire.webp" alt="" width="64" height="64" class="envelope__stamp" aria-hidden="true" />
+              <img src="images/stamp_hurler.webp" alt="" width="43" height="64" class="envelope__stamp" aria-hidden="true" />
+            </div>
+          </div>
+
+          <!-- Animation scaffolding — hidden, built in a later session -->
+          <div class="envelope__flap" aria-hidden="true"></div>
+          <div class="envelope__letter" aria-hidden="true"></div>
+
+        </div>
+      </div>
+
     </div>
+
   </section>
 
 
