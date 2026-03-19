@@ -562,179 +562,345 @@
 
   <!-- ============================================================
        SECTION 9 — How to Get There
-       Background: #eeeade
+       Background: --color-cream (#efe6d3)
+       Layout: full-width display heading, then 40/60 two-column grid.
+       Left col: directions copy.
+       Right col: two stacked polaroids (placeholder) + SVG map of Ireland.
+       ANIMATION (future): ScrollTrigger scrub draws a curved route path
+       from Dublin to Ballintubbert on the overlay SVG.
   ============================================================ -->
   <section id="getting-there" aria-labelledby="getting-there-heading">
-    <div class="getting-there__content">
-      <!-- Left: heading + directions text -->
+    <div class="getting-there__inner">
+
+    <h2 id="getting-there-heading">How to Get There</h2>
+
+    <div class="getting-there__grid">
+
+      <!-- Left column: directions text -->
       <div class="getting-there__text">
-        <h2 id="getting-there-heading">How to Get There</h2>
-        <p>Placeholder: Driving, flying, and taxi directions.</p>
+        <p>Ballintubbert Gardens &amp; House is nestled in the countryside of County Laois, approximately one hour from Dublin by car. It&rsquo;s easily accessible for guests coming from the city or surrounding areas.</p>
+
+        <p>From Dublin:</p>
+        <ul class="getting-there__directions">
+          <li>Take the M7 motorway heading southwest.</li>
+          <li>Exit at Junction 16 for the R445 toward Portlaoise / Stradbally.</li>
+          <li>Follow local signage to Ballintubbert Gardens &amp; House.</li>
+        </ul>
+
+        <p>For guests wishing to make a weekend of it, there are a range of lovely accommodation options nearby. Alternatively, guests are very welcome to stay in Dublin and enjoy a scenic drive down for the celebration. We recommend arranging car sharing or taxis for convenience and to ensure everyone can fully enjoy the day. Please don&rsquo;t drink and drive.</p>
       </div>
 
-      <!-- Right: polaroid photos + Ireland map -->
+      <!-- Right column: polaroids + map -->
       <div class="getting-there__visuals">
-        <figure class="polaroid">
-          <img src="images/getting-there-1.jpg" alt="" width="280" height="320" />
-        </figure>
-        <figure class="polaroid">
-          <img src="images/getting-there-2.jpg" alt="" width="280" height="320" />
-        </figure>
-        <figure class="getting-there__map">
+
+        <!-- Composition wrapper: keeps polaroids and map as a single structural unit.
+             Polaroids are absolute within this; the map (normal flow) sets the height. -->
+        <div class="getting-there__composition">
+
+          <!-- Polaroid wrapper: aspect-ratio defines composition height fluidly.
+               Both polaroids are absolute inside; they scale as the column resizes. -->
+          <div class="getting-there__polaroids">
+            <div class="polaroid getting-there__polaroid--back" aria-hidden="true">
+              <div class="polaroid__photo"></div>
+            </div>
+            <div class="polaroid getting-there__polaroid--front" aria-hidden="true">
+              <div class="polaroid__photo"></div>
+            </div>
+          </div>
+
+        <!-- Ireland SVG map.
+             The overlay <svg> shares the same viewBox (0 0 273 343) as the map,
+             so route path coordinates will align exactly in the animation phase. -->
+        <div class="getting-there__map">
           <img
-            src="images/ireland-map.png"
-            alt="Map of Ireland with a pin at County Laois"
-            width="320"
-            height="400"
+            src="images/ireland-map.svg"
+            alt="Map of Ireland"
+            width="273"
+            height="343"
+            aria-hidden="true"
           />
-          <figcaption>We're here</figcaption>
-        </figure>
-      </div>
-    </div>
+          <!-- Route overlay — populated in animation phase -->
+          <svg
+            class="getting-there__route"
+            viewBox="0 0 273 343"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <!-- Curved route path from Dublin to Ballintubbert added here in animation phase -->
+          </svg>
+        </div>
+
+        </div><!-- /.getting-there__composition -->
+
+      </div><!-- /.getting-there__visuals -->
+
+    </div><!-- /.getting-there__grid -->
+
+    </div><!-- /.getting-there__inner -->
   </section>
 
 
   <!-- ============================================================
        SECTION 10 — Where to Stay
-       Background: #eeeade
+       Background: --color-bg-default (#eeeade)
   ============================================================ -->
   <section id="where-to-stay" aria-labelledby="where-to-stay-heading">
-    <h2 id="where-to-stay-heading" class="visually-hidden">Where to Stay</h2>
+    <div class="where-to-stay__inner">
 
-    <blockquote class="where-to-stay__pull-quote">
-      "We recommend staying nearby and sharing taxis — the countryside deserves to be enjoyed."
-    </blockquote>
+      <h2 id="where-to-stay-heading">Where to Stay</h2>
 
-    <div class="where-to-stay__tables">
-      <!-- Near the Venue -->
-      <div class="where-to-stay__column">
-        <h3>Near the Venue</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Distance</th>
-              <th>Notes</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><a href="#" target="_blank" rel="noopener noreferrer">Placeholder Hotel</a></td>
-              <td>5 min</td>
-              <td>Placeholder note</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <p class="where-to-stay__intro">Accommodation options depend on how you&rsquo;d like to spend the weekend. You can stay in Dublin or choose accommodation in nearby towns and villages. Please don&rsquo;t drink and drive&mdash;the legal limit is lower than in the United States. Cabs are available!</p>
 
-      <!-- Dublin City Break -->
-      <div class="where-to-stay__column">
-        <h3>Dublin City Break</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Area</th>
-              <th>Notes</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><a href="#" target="_blank" rel="noopener noreferrer">Placeholder Hotel</a></td>
-              <td>City Centre</td>
-              <td>Placeholder note</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+      <div class="where-to-stay__columns">
+
+        <!-- ── Left: Near the Venue ───────────────────────────── -->
+        <div class="where-to-stay__col">
+          <p class="where-to-stay__col-label">Near the Venue</p>
+          <p class="where-to-stay__col-intro">Ideal for those who want a short taxi ride home. Nearby towns include Athy, Portlaoise, Abbeyleix, Kildare, and Carlow.</p>
+
+          <table class="where-to-stay__table">
+            <thead>
+              <tr>
+                <th>Homes &amp; B&amp;B&rsquo;s</th>
+                <th>Drive</th>
+                <th>Price</th>
+                <th>Guests</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><a href="#" target="_blank" rel="noopener noreferrer">Willsgrove House</a></td>
+                <td>13 min</td>
+                <td>$98&thinsp;/&thinsp;€90</td>
+                <td>B&amp;B</td>
+              </tr>
+              <tr>
+                <td><a href="#" target="_blank" rel="noopener noreferrer">The Farm Cottage</a></td>
+                <td>15 min</td>
+                <td>$509&thinsp;/&thinsp;€469</td>
+                <td>5</td>
+              </tr>
+              <tr>
+                <td><a href="#" target="_blank" rel="noopener noreferrer">Blackhill Woods Retreat</a></td>
+                <td>28 min</td>
+                <td>$186&thinsp;/&thinsp;€171</td>
+                <td>B&amp;B</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <table class="where-to-stay__table">
+            <thead>
+              <tr>
+                <th>Hotels &amp; B&amp;B&rsquo;s</th>
+                <th>Drive</th>
+                <th>Price</th>
+                <th>Guests</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><a href="#" target="_blank" rel="noopener noreferrer">Coolanowle</a></td>
+                <td>13 min</td>
+                <td>$185&thinsp;/&thinsp;€170</td>
+                <td>B&amp;B</td>
+              </tr>
+              <tr>
+                <td><a href="#" target="_blank" rel="noopener noreferrer">Killeshin Hotel</a></td>
+                <td>19 min</td>
+                <td>$162&thinsp;/&thinsp;€149</td>
+                <td>5</td>
+              </tr>
+              <tr>
+                <td><a href="#" target="_blank" rel="noopener noreferrer">Midlands Park Hotel</a></td>
+                <td>21 min</td>
+                <td>$197&thinsp;/&thinsp;€181</td>
+                <td>B&amp;B</td>
+              </tr>
+              <tr>
+                <td><a href="#" target="_blank" rel="noopener noreferrer">Omos</a></td>
+                <td>28 min</td>
+                <td>TBC</td>
+                <td>B&amp;B</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ── Right: Dublin City Break ──────────────────────── -->
+        <div class="where-to-stay__col">
+          <p class="where-to-stay__col-label">Dublin City Break</p>
+          <p class="where-to-stay__col-intro">Approximately one hour drive. Perfect if you are extending your trip for some sightseeing and prefer to stay in the city.</p>
+
+          <table class="where-to-stay__table">
+            <thead>
+              <tr>
+                <th>Hotel</th>
+                <th>Price</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><a href="#" target="_blank" rel="noopener noreferrer">The Hoxton</a></td>
+                <td>$405&thinsp;/&thinsp;€373</td>
+              </tr>
+              <tr>
+                <td><a href="#" target="_blank" rel="noopener noreferrer">Number 31</a></td>
+                <td>$478&thinsp;/&thinsp;€440</td>
+              </tr>
+              <tr>
+                <td><a href="#" target="_blank" rel="noopener noreferrer">Stauntons on the Green</a></td>
+                <td>$508&thinsp;/&thinsp;€467</td>
+              </tr>
+              <tr>
+                <td><a href="#" target="_blank" rel="noopener noreferrer">Zanzibar Locke</a></td>
+                <td>$520&thinsp;/&thinsp;€478</td>
+              </tr>
+              <tr>
+                <td><a href="#" target="_blank" rel="noopener noreferrer">Anantara The Marker</a></td>
+                <td>$459&thinsp;/&thinsp;€422</td>
+              </tr>
+              <tr>
+                <td><a href="#" target="_blank" rel="noopener noreferrer">The Shelbourne</a></td>
+                <td>$1,074&thinsp;/&thinsp;€988</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p class="where-to-stay__note">For those staying in Dublin on Wednesday night ahead of the wedding festivities, the bride and groom will be staying at Stauntons on the Green. Room prices range from <span class="where-to-stay__num">$273&thinsp;/&thinsp;€251</span> to <span class="where-to-stay__num">$327&thinsp;/&thinsp;€301</span>. You are welcome to join us!</p>
+        </div>
+
+      </div><!-- /.where-to-stay__columns -->
+
+    </div><!-- /.where-to-stay__inner -->
   </section>
 
 
   <!-- ============================================================
        SECTION 11 — Common Questions
-       Accordion. Background: #ceccaa
+       Accordion. Background: --color-green-dark (#43461f)
   ============================================================ -->
   <section id="common-questions" aria-labelledby="faq-heading">
-    <h2 id="faq-heading">Common<br />Questions</h2>
+    <div class="faq__inner">
 
-    <div class="faq__accordion" role="list">
+      <div class="faq__layout">
 
-      <article class="faq__item" role="listitem">
-        <button
-          class="faq__question"
-          aria-expanded="false"
-          aria-controls="faq-answer-1"
-        >
-          Placeholder question one?
-          <!-- Wax seal expand indicator goes here -->
-          <span class="faq__seal" aria-hidden="true"></span>
-        </button>
-        <div id="faq-answer-1" class="faq__answer" hidden>
-          <p>Placeholder answer text.</p>
-        </div>
-      </article>
+        <h2 id="faq-heading">Common<br />Questions</h2>
 
-      <article class="faq__item" role="listitem">
-        <button
-          class="faq__question"
-          aria-expanded="false"
-          aria-controls="faq-answer-2"
-        >
-          Placeholder question two?
-          <span class="faq__seal" aria-hidden="true"></span>
-        </button>
-        <div id="faq-answer-2" class="faq__answer" hidden>
-          <p>Placeholder answer text.</p>
-        </div>
-      </article>
+        <div class="faq__accordion" role="list">
 
-      <article class="faq__item" role="listitem">
-        <button
-          class="faq__question"
-          aria-expanded="false"
-          aria-controls="faq-answer-3"
-        >
-          Placeholder question three?
-          <span class="faq__seal" aria-hidden="true"></span>
-        </button>
-        <div id="faq-answer-3" class="faq__answer" hidden>
-          <p>Placeholder answer text.</p>
-        </div>
-      </article>
+          <article class="faq__item" role="listitem">
+            <button class="faq__question" aria-expanded="false" aria-controls="faq-answer-1">
+              Can I bring a guest?
+            </button>
+            <div id="faq-answer-1" class="faq__answer" hidden>
+              <p>We kindly ask you to please stick to the names listed on your invitation. That means no unexpected plus ones.</p>
+            </div>
+          </article>
 
-    </div>
+          <article class="faq__item" role="listitem">
+            <button class="faq__question" aria-expanded="false" aria-controls="faq-answer-2">
+              What if I have dietary restrictions?
+            </button>
+            <div id="faq-answer-2" class="faq__answer" hidden>
+              <p>Please let us know when sharing your RSVP. We are happy to accommodate to ensure everyone has a happy (and delicious) experience.</p>
+            </div>
+          </article>
+
+          <article class="faq__item" role="listitem">
+            <button class="faq__question" aria-expanded="false" aria-controls="faq-answer-3">
+              Do I need to rent a car? Do I need an international license?
+            </button>
+            <div id="faq-answer-3" class="faq__answer" hidden>
+              <p>Renting a car is the easiest way to get there and get around during your stay. Ubers and taxis are available, but they can be expensive, especially if you&rsquo;re traveling longer distances. Carpooling is recommended too.</p>
+              <p>You do not need an international driver&rsquo;s license to drive in Ireland. Your valid U.S. driver&rsquo;s license is accepted &mdash; just remember that in Ireland people drive on the left side of the road.</p>
+            </div>
+          </article>
+
+          <article class="faq__item" role="listitem">
+            <button class="faq__question" aria-expanded="false" aria-controls="faq-answer-4">
+              Is there parking?
+            </button>
+            <div id="faq-answer-4" class="faq__answer" hidden>
+              <p>Yes! On-site parking will be available, but we absolutely recommend carpooling or taxis if you are staying nearby.</p>
+            </div>
+          </article>
+
+          <article class="faq__item" role="listitem">
+            <button class="faq__question" aria-expanded="false" aria-controls="faq-answer-5">
+              What&rsquo;s the weather like in Ireland?
+            </button>
+            <div id="faq-answer-5" class="faq__answer" hidden>
+              <p>To put it simply: unpredictable. Ireland is known for experiencing all four seasons within one day, but we are hoping for a sunny weekend! We plan to have the wedding outdoors in the garden, but of course have a backup plan if needed.</p>
+            </div>
+          </article>
+
+          <article class="faq__item" role="listitem">
+            <button class="faq__question" aria-expanded="false" aria-controls="faq-answer-6">
+              Can I take photos during the ceremony?
+            </button>
+            <div id="faq-answer-6" class="faq__answer" hidden>
+              <p>We&rsquo;d love for everyone to be rooted with us in the present moment, so we kindly ask for no phones and cameras during the ceremony. Outside of this moment, grab all the content you&rsquo;d like! We&rsquo;ll have a live album at the following link and would love for you to download the app to upload your photos.</p>
+            </div>
+          </article>
+
+          <article class="faq__item" role="listitem">
+            <button class="faq__question" aria-expanded="false" aria-controls="faq-answer-7">
+              Do I need to come to all listed events?
+            </button>
+            <div id="faq-answer-7" class="faq__answer" hidden>
+              <p>That is completely up to you! We&rsquo;d love to have all of our friends and family with us for everything, but completely understand if you can only join us for part of the weekend.</p>
+            </div>
+          </article>
+
+        </div><!-- /.faq__accordion -->
+
+      </div><!-- /.faq__layout -->
+
+    </div><!-- /.faq__inner -->
   </section>
 
 
   <!-- ============================================================
        SECTION 12 — Gifts
-       Three fanned cards. Background: #eeeade
+       Background: --color-bg-default (#eeeade)
   ============================================================ -->
   <section id="gifts" aria-labelledby="gifts-heading">
-    <h2 id="gifts-heading">Placeholder: Gifts intro heading</h2>
+    <div class="gifts__inner">
 
-    <div class="gifts__cards">
+      <!-- Header row: heading left, intro text right -->
+      <div class="gifts__header">
+        <h2 id="gifts-heading">Gifts</h2>
+        <p class="gifts__intro">We know many of you are traveling from afar, and we are so grateful. Your presence is the greatest gift of all! If you&rsquo;d like to give us a gift as we begin this next chapter and lay roots in Ireland and embark on our honeymoon, we&rsquo;ve included details here on contributing to our newlywed fund.</p>
+      </div>
 
-      <article class="gifts__card gifts__card--revolut">
-        <div class="gifts__qr-placeholder" aria-label="Revolut QR code placeholder"></div>
-        <p class="gifts__method">Revolut</p>
-        <p class="gifts__details">Placeholder: @handle or link</p>
-      </article>
+      <!-- Three payment method cards -->
+      <div class="gifts__cards">
 
-      <article class="gifts__card gifts__card--zelle">
-        <div class="gifts__qr-placeholder" aria-label="Zelle QR code placeholder"></div>
-        <p class="gifts__method">Zelle</p>
-        <p class="gifts__details">Placeholder: phone or email</p>
-      </article>
+        <article class="gifts__card">
+          <div class="gifts__image-placeholder" aria-label="Revolut QR code placeholder"></div>
+          <p class="gifts__method">Revolut</p>
+          <p class="gifts__details">@ashleyweinaug</p>
+          <p class="gifts__details"><span class="gifts__data">IBAN: ES08 1583 0001 1190 5044 6372</span></p>
+          <p class="gifts__details"><span class="gifts__data">SWIFT Code: REVOESM2</span></p>
+        </article>
 
-      <article class="gifts__card gifts__card--cash">
-        <div class="gifts__qr-placeholder" aria-label="Cash QR code placeholder"></div>
-        <p class="gifts__method">Cash</p>
-        <p class="gifts__details">Placeholder: details</p>
-      </article>
+        <article class="gifts__card">
+          <div class="gifts__image-placeholder" aria-label="Zelle QR code placeholder"></div>
+          <p class="gifts__method">Zelle</p>
+          <p class="gifts__details">ashley.weinaug@gmail.com</p>
+        </article>
 
-    </div>
+        <article class="gifts__card">
+          <div class="gifts__image-placeholder" aria-label="Cash — no QR code" role="presentation"></div>
+          <p class="gifts__method">Cash</p>
+          <p class="gifts__details">For guests who prefer, cash gifts can be brought along to the wedding.</p>
+        </article>
+
+      </div><!-- /.gifts__cards -->
+
+    </div><!-- /.gifts__inner -->
   </section>
 
 
@@ -746,25 +912,27 @@
     <!-- Background image is set via CSS background-image -->
 
     <div class="countdown__display">
+
       <div class="countdown__unit">
-        <span class="countdown__number" id="countdown-days">--</span>
+        <span class="countdown__number" id="countdown-days"></span>
         <span class="countdown__label">Days</span>
       </div>
       <span class="countdown__colon" aria-hidden="true">:</span>
       <div class="countdown__unit">
-        <span class="countdown__number" id="countdown-hours">--</span>
+        <span class="countdown__number" id="countdown-hours"></span>
         <span class="countdown__label">Hours</span>
       </div>
       <span class="countdown__colon" aria-hidden="true">:</span>
       <div class="countdown__unit">
-        <span class="countdown__number" id="countdown-minutes">--</span>
+        <span class="countdown__number" id="countdown-minutes"></span>
         <span class="countdown__label">Minutes</span>
       </div>
       <span class="countdown__colon" aria-hidden="true">:</span>
       <div class="countdown__unit">
-        <span class="countdown__number" id="countdown-seconds">--</span>
+        <span class="countdown__number" id="countdown-seconds"></span>
         <span class="countdown__label">Seconds</span>
       </div>
+
     </div>
 
     <!-- Shown after wedding date has passed -->

@@ -760,6 +760,14 @@ h4 {
   margin-bottom: 32px;
 }
 
+/* Last child in a column removes its own bottom margin so it doesn't
+   add to the section's bottom padding, keeping top and bottom even */
+.event-section__col > p:last-child,
+.event-section__col > h4:last-child,
+.event-section__col > .event-section__schedule:last-child {
+  margin-bottom: 0;
+}
+
 /* --- Schedule (time + event rows within a col) ---
    Parent grid: max-content col 1 = width of the widest time
    string, so all descriptions stay left-aligned across rows.
@@ -1167,4 +1175,569 @@ h4 {
     margin: 16px 16px 0;
   }
 
+}
+
+
+/* ============================================================
+   SECTION 9 — How to Get There
+   ============================================================ */
+
+#getting-there {
+  background-color: var(--color-bg-default); /* matches event sections */
+  padding: 180px var(--page-padding);
+}
+
+.getting-there__inner {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+#getting-there h2 {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+/* Flexbox layout: text has min-width and grows; visuals fills remaining space */
+.getting-there__grid {
+  display: flex;
+  align-items: center;
+  gap: 60px;
+}
+
+.getting-there__text {
+  flex: 1;
+  min-width: 480px;
+}
+
+.getting-there__visuals {
+  flex: 1;
+}
+
+
+/* ── Left column: text ─────────────────────────────────── */
+
+.getting-there__text p {
+  margin-bottom: 32px;
+}
+
+.getting-there__text p:last-child {
+  margin-bottom: 0;
+}
+
+/* Bullet list — re-enable list-style removed by CSS reset */
+.getting-there__directions {
+  list-style: disc;
+  padding-left: 1.4em;
+  margin-top: -16px; /* snug under "From Dublin:" paragraph */
+  margin-bottom: 32px;
+}
+
+.getting-there__directions li {
+  margin-bottom: 8px;
+}
+
+
+/* ── Right column: visuals ─────────────────────────────── */
+
+/* Polaroid wrapper: aspect-ratio gives the composition a fluid height.
+   As the visuals column narrows, the wrapper shrinks proportionally.
+   Both polaroids are absolute inside, so they scale with it. */
+.getting-there__polaroids {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+}
+
+/* Polaroid — shared styles. Width is % of the wrapper so it scales. */
+.polaroid {
+  position: absolute;
+  background: var(--color-cream);
+  padding: 12px 12px 48px; /* thick bottom = classic Polaroid look */
+  box-shadow:
+    0 1.836px 0 0 #fff inset,
+    1.836px 0 0 0 rgba(0, 0, 0, 0.20) inset;
+  width: 70%;
+}
+
+.polaroid__photo {
+  width: 100%;
+  aspect-ratio: 383 / 414; /* Figma photo area ratio */
+  background-color: #d6d0c4; /* neutral placeholder tone */
+}
+
+/* Back polaroid — Figma rotation */
+.getting-there__polaroid--back {
+  top: 16%;
+  right: 11%;
+  transform: rotate(13.308deg);
+  z-index: 1;
+}
+
+/* Front polaroid — Figma rotation */
+.getting-there__polaroid--front {
+  top: 26%;
+  right: 19%;
+  transform: rotate(8.62deg);
+  z-index: 2;
+}
+
+/* Map: normal flow, pulled up into the polaroids via negative margin-top.
+   margin-top % is relative to parent width — gives proportional overlap.
+   z-index above polaroids so it reads as sitting on top. */
+.getting-there__map {
+  position: relative;
+  width: 50%;
+  margin-left: 40%;
+  margin-top: -60%;
+  z-index: 10;
+}
+
+.getting-there__map img {
+  width: 100%;
+  height: auto;
+}
+
+/* Route overlay SVG — shares viewBox (0 0 273 343) with map image.
+   Route path added in animation build phase. */
+.getting-there__route {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+
+/* ── Responsive ─────────────────────────────────────────── */
+
+@media (max-width: 1100px) {
+
+  #getting-there {
+    padding: 120px var(--page-padding);
+  }
+
+  /* Stack columns vertically */
+  .getting-there__grid {
+    flex-direction: column;
+  }
+
+  /* Release min-width so text fills the full column */
+  .getting-there__text {
+    min-width: 0;
+  }
+
+}
+
+
+/* ============================================================
+   SECTION 10 — Where to Stay
+   ============================================================ */
+
+#where-to-stay {
+  background-color: var(--color-bg-default);
+  padding: 180px var(--page-padding);
+}
+
+.where-to-stay__inner {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+#where-to-stay h2 {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+/* Intro paragraph — centered, constrained width */
+.where-to-stay__intro {
+  text-align: center;
+  max-width: 768px;
+  margin: 0 auto 80px;
+}
+
+/* 50/50 grid — top-aligned so unequal content heights don't stretch */
+.where-to-stay__columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: start;
+}
+
+
+/* ── Column label (NEAR THE VENUE / DUBLIN CITY BREAK) ──────── */
+
+.where-to-stay__col-label {
+  font-family: var(--font-h4); /* Recoleta */
+  font-weight: var(--font-h4-weight); /* 600 SemiBold */
+  font-size: var(--size-body);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 16px;
+}
+
+/* Intro text under the column label */
+.where-to-stay__col-intro {
+  margin-bottom: 40px;
+}
+
+
+/* ── Tables ─────────────────────────────────────────────────── */
+
+.where-to-stay__table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 48px;
+}
+
+/* Remove bottom margin from the last table in each column */
+.where-to-stay__col > .where-to-stay__table:last-of-type {
+  margin-bottom: 0;
+}
+
+/* Column headers */
+.where-to-stay__table th {
+  font-family: var(--font-h4); /* Recoleta SemiBold */
+  font-weight: var(--font-h4-weight);
+  font-size: var(--size-body-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-align: left;
+  padding-bottom: 12px;
+}
+
+/* Data cells — non-name columns (drive, price, guests) use Recoleta */
+.where-to-stay__table td {
+  padding-top: 14px;
+  padding-bottom: 2px;
+  vertical-align: top;
+}
+
+.where-to-stay__table td:not(:first-child) {
+  font-family: var(--font-h4); /* Recoleta — numbers/data */
+  font-weight: normal;
+  font-size: var(--size-body-sm); /* Recoleta renders optically larger than Lancelot at same size */
+}
+
+/* Add left padding to non-name columns so they don't crowd the name */
+.where-to-stay__table td:not(:first-child),
+.where-to-stay__table th:not(:first-child) {
+  padding-left: 24px;
+  white-space: nowrap;
+}
+
+/* Property/hotel name links */
+.where-to-stay__table a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Bride/groom note at bottom of Dublin column */
+.where-to-stay__note {
+  margin-top: 40px;
+}
+
+/* Numeric values inline within the note — match table data cell treatment */
+.where-to-stay__num {
+  font-family: var(--font-h4);
+  font-weight: normal;
+  font-size: var(--size-body-sm);
+}
+
+
+/* ── Responsive ─────────────────────────────────────────────── */
+
+@media (max-width: 1100px) {
+
+  #where-to-stay {
+    padding: 120px var(--page-padding);
+  }
+
+  /* Stack to single column */
+  .where-to-stay__columns {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+
+/* ============================================================
+   SECTION 11 — Common Questions (FAQ accordion)
+   ============================================================ */
+
+#common-questions {
+  background-color: var(--color-green-dark);
+  padding: 180px var(--page-padding);
+}
+
+.faq__inner {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+/* Two-column layout: heading left, accordion right */
+.faq__layout {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 60px;
+  align-items: start;
+}
+
+#common-questions h2 {
+  color: var(--color-cream);
+}
+
+
+/* ── Accordion items ─────────────────────────────────────── */
+
+.faq__item {
+  margin-bottom: 40px;
+}
+
+.faq__item:last-child {
+  margin-bottom: 0;
+}
+
+/* Question button — full-width, styled as text */
+.faq__question {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  text-transform: uppercase;
+  color: var(--color-cream);
+  font-family: var(--font-h4); /* Recoleta */
+  font-weight: var(--font-h4-weight); /* SemiBold */
+  font-size: var(--size-h4);
+  line-height: var(--leading-h4);
+}
+
+/* Chevron indicator — SVG background-image so stroke width is controllable.
+   inline-block + width/height required for transform to apply to a pseudo-element. */
+.faq__question::after {
+  content: '';
+  flex-shrink: 0;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'><path d='M2 5 L8 11 L14 5' stroke='%23efe6d3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.7;
+  transform: rotate(0deg);   /* points down by default */
+  transition: transform 0.35s ease-in-out;
+}
+
+.faq__question[aria-expanded="true"]::after {
+  transform: rotate(180deg); /* points up when open */
+}
+
+/* Answer panel */
+.faq__answer {
+  padding-top: 16px;
+  color: var(--color-cream);
+}
+
+.faq__answer p {
+  margin-bottom: 16px;
+}
+
+.faq__answer p:last-child {
+  margin-bottom: 0;
+}
+
+.faq__answer[hidden] {
+  display: none;
+}
+
+
+/* ── Responsive ─────────────────────────────────────────── */
+
+@media (max-width: 1100px) {
+
+  #common-questions {
+    padding: 120px var(--page-padding);
+  }
+
+  /* Stack heading above accordion */
+  .faq__layout {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+
+/* ============================================================
+   SECTION 12 — Gifts
+   ============================================================ */
+
+#gifts {
+  background-color: var(--color-bg-default);
+  padding: 180px var(--page-padding);
+}
+
+.gifts__inner {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+/* Header row: h2 left, intro text fills remaining space */
+.gifts__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 80px;
+  margin-bottom: 80px;
+}
+
+.gifts__intro {
+  flex: 1;
+  padding-top: 8px; /* optically align with top of heading */
+}
+
+/* Cards — auto-wrap when columns would drop below 280px */
+.gifts__cards {
+  display: flex;
+  flex-wrap:wrap;
+  gap: 40px;
+  align-items: start;
+}
+
+.gifts__card {
+  flex:1;
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+
+  /* Stack to single column */
+  .gifts__card{
+    flex:1 1 100%;
+  }
+
+}
+
+
+/* ── Card ───────────────────────────────────────────────── */
+
+/* Image / QR placeholder */
+.gifts__image-placeholder {
+  width: 100%;
+  aspect-ratio: 1;
+  background-color: #d6d1c9; /* neutral warm grey, matches polaroid placeholder tone */
+  margin-bottom: 20px;
+}
+
+/* Payment method label */
+.gifts__method {
+  font-family: var(--font-h4); /* Recoleta SemiBold */
+  font-weight: var(--font-h4-weight);
+  font-size: var(--size-body-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+}
+
+/* Detail lines */
+.gifts__details {
+  font-size: var(--size-body-sm);
+  margin-bottom: 4px;
+}
+
+.gifts__details:last-child {
+  margin-bottom: 0;
+}
+
+/* IBAN / SWIFT values — Recoleta, no uppercase */
+.gifts__data {
+  font-family: var(--font-h4);
+  font-weight: normal;
+}
+
+
+/* ── Responsive ─────────────────────────────────────────── */
+
+@media (max-width: 1100px) {
+
+  #gifts {
+    padding: 120px var(--page-padding);
+  }
+
+  .gifts__header {
+    flex-direction: column;
+    gap: 40px;
+    margin-bottom: 60px;
+  }
+
+}
+
+
+/* ============================================================
+   SECTION 13 — Countdown
+   ============================================================ */
+
+#countdown {
+  background-image: url('../images/floral-background.webp');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px var(--page-padding);
+  color: var(--color-cream);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+}
+
+/* Flex row: units + colons */
+.countdown__display {
+  display: flex;
+  align-items: flex-start;
+}
+
+/* Each unit: number on top, label 24px below, both centred */
+.countdown__unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Large display numbers — width locked per-field by JS (not per-digit) */
+.countdown__number {
+  display: inline-block;
+  text-align: center;
+  font-family: var(--font-h1); /* TheSecretLibrary */
+  font-size: clamp(18px, 7vw, 130px);
+  line-height: 2;
+  /* width set dynamically by initCountdown() */
+}
+
+/* Colon separator — matches number font-size exactly */
+.countdown__colon {
+  font-family: var(--font-h1);
+  font-size: clamp(18px, 7vw, 130px);
+  line-height: 1;
+  padding: 0 0.1em;
+  align-self: flex-start; /* align with the number row, not the label */
+}
+
+/* Unit labels */
+.countdown__label {
+  font-family: var(--font-h3); /* Recoleta */
+  font-size: var(--size-h3);
+  text-align: center;
+}
+
+/* Post-wedding message — shown after target date passes */
+.countdown__married {
+  font-family: var(--font-h1);
+  font-size: clamp(40px, 6vw, 96px);
+  line-height: 1.2;
+  text-align: center;
+  width: 100%;
 }
