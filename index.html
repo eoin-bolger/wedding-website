@@ -19,10 +19,19 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
 
+  <!-- Lenis smooth scroll — momentum/inertia on wheel scroll -->
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js" defer></script>
+
   <!-- Site scripts — defer keeps it from blocking HTML parse -->
   <script src="js/main.js" defer></script>
 </head>
 <body>
+
+  <!-- ============================================================
+       HERO + INTRO STACK
+       Hero sticks at top: 0 while Intro slides over it on scroll.
+  ============================================================ -->
+  <div class="hero-intro-stack">
 
   <!-- ============================================================
        SECTION 1 — Hero
@@ -110,6 +119,8 @@
 
   </section>
 
+  </div><!-- /hero-intro-stack -->
+
 
   <!-- ============================================================
        SECTION 3 — Our Story ⚠️ STATIC PLACEHOLDER
@@ -118,8 +129,7 @@
   ============================================================ -->
   <section id="our-story" aria-labelledby="our-story-heading">
 
-    <!-- "Our Story" — large cream heading, absolute top-left -->
-    <h2 id="our-story-heading" class="our-story__heading">Our<br />Story</h2>
+    <h2 id="our-story-heading" class="our-story__heading">Our Story</h2>
 
     <!-- Two envelope fronts side by side -->
     <div class="our-story__envelopes">
@@ -128,9 +138,11 @@
       <div class="envelope-wrapper envelope-wrapper--ashley">
         <div class="envelope">
 
+          <!-- Flap first in DOM = paints behind the front face (later DOM = paints on top) -->
+          <div class="envelope__flap" aria-hidden="true"></div>
           <div class="envelope__front">
             <!-- Address label — name in TheSecretLibrary, like a handwritten address -->
-            <p class="envelope__address">Ashley's Version</p>
+            <p class="envelope__address">Ashley</p>
             <!-- Stamp cluster: American stamps -->
             <div class="envelope__stamps">
               <img src="images/stamp_america.webp" alt="" width="96" height="64" class="envelope__stamp" aria-hidden="true" />
@@ -138,10 +150,16 @@
               <img src="images/stamp_cherub.webp" alt="" width="43" height="64" class="envelope__stamp" aria-hidden="true" />
             </div>
           </div>
-
-          <!-- Animation scaffolding — hidden, built in a later session -->
-          <div class="envelope__flap" aria-hidden="true"></div>
-          <div class="envelope__letter" aria-hidden="true"></div>
+          <div class="envelope__letter" aria-hidden="true">
+            <div class="envelope__fold-line envelope__fold-line--upper" aria-hidden="true"></div>
+            <div class="envelope__fold-line envelope__fold-line--lower" aria-hidden="true"></div>
+            <div class="envelope__letter-inner">
+              <p>You know the line, "We found love in a hopeless place?" That was me and Eoin's story. On March 11, 2023, we both had spent the day out (me at a calçotada, him golfing) and happened to find our way later into a sports bar attached to a hostel in Barcelona city center (a place I would not typically frequent 🙃). I ran into a friend of a friend, he invited me over to his table with his friends, and that was the first time Eoin and I met. I was there with my friend Dan and we all spent the evening drinking and hanging out together. At one point, I whispered to Dan that I thought Eoin was cute. When I went to the bar to order a round of drinks, Eoin asked Dan something about us being together, and Dan replied, "Oh no… we're not a couple. I have a boyfriend and she's into you." From the moment I returned, I felt a shift in the energy and eventually Eoin moved closer to me as friends, one by one, left. Then when it was just the two of us left, he kissed me.</p>
+              <p>Everything felt so effortless and just made sense with us. Over the next few weeks, we dated and I knew pretty quickly Eoin was nothing like guys I've dated in the past… we often joke that we share a brain because we are always thinking the same things. Soon after, on May 14, I asked Eoin to be my boyfriend (since he was taking so long to ask me). In August, I went to Ireland with him for the first time and met his entire family. Again, everything just felt right. They were so lovely and welcoming and were the type of family I dreamt of marrying into. In September, on a trip to Madrid, my dad and stepmom met Eoin and his dad for the first time. In January 2024, I brought Eoin home to America for the first time where he met my friends and mom. We moved in together. On our one year anniversary, we adopted our cat Roísin.</p>
+              <p>Then, on May 27, 2024 at Muckross House in Killarney National Park, in front of my dad, stepmom, and Eoin's dad, Eoin asked me to marry him! It was an easy yes and I wouldn't have changed a thing about it (okay, maybe I would have changed my outfit).</p>
+              <p class="envelope__signature">Ashley</p>
+            </div>
+          </div>
 
         </div>
       </div>
@@ -150,9 +168,11 @@
       <div class="envelope-wrapper envelope-wrapper--eoin">
         <div class="envelope">
 
+          <!-- Flap first in DOM = paints behind the front face -->
+          <div class="envelope__flap" aria-hidden="true"></div>
           <div class="envelope__front">
             <!-- Address label -->
-            <p class="envelope__address">Eoin's Version</p>
+            <p class="envelope__address">Eoin</p>
             <!-- Stamp cluster: Irish stamps -->
             <div class="envelope__stamps">
               <img src="images/stamp_eire.webp" alt="" width="64" height="64" class="envelope__stamp" aria-hidden="true" />
@@ -161,8 +181,10 @@
           </div>
 
           <!-- Animation scaffolding — hidden, built in a later session -->
-          <div class="envelope__flap" aria-hidden="true"></div>
-          <div class="envelope__letter" aria-hidden="true"></div>
+          <div class="envelope__letter" aria-hidden="true">
+            <div class="envelope__fold-line envelope__fold-line--upper" aria-hidden="true"></div>
+            <div class="envelope__fold-line envelope__fold-line--lower" aria-hidden="true"></div>
+          </div>
 
         </div>
       </div>
@@ -196,6 +218,7 @@
   ============================================================ -->
   <section id="welcome-dublin" class="event-section" aria-labelledby="dublin-heading">
 
+    <div class="event-section__inner">
     <header class="event-section__header">
       <h2 id="dublin-heading">Welcome to Dublin</h2>
       <div class="event-section__meta">
@@ -240,6 +263,7 @@
 
       </div>
     </div>
+  </div>
 
   </section>
 
@@ -271,6 +295,7 @@
        Background: #efe6d3
   ============================================================ -->
   <section id="night-before" class="event-section" aria-labelledby="night-before-heading">
+    <div class="event-section__inner">
     <header class="event-section__header">
       <h2 id="night-before-heading">The Night Before</h2>
       <div class="event-section__meta">
@@ -304,6 +329,7 @@
         <p>The Fisherman's Thatched Inn | Fisherstown, Ballybrittas, Co. Laois, R32 CR22</p>
 
       </div>
+    </div>
     </div>
 
   </section>
@@ -343,7 +369,7 @@
   <section id="wedding-day" aria-labelledby="wedding-day-heading">
 
     <!-- ── Zone 1: Header + 3-col + attire (dark green) ─────── -->
-    <div class="wedding-day__upper">
+    <div class="wedding-day__upper" data-nav-light>
 
       <!-- Centred overline + heading -->
       <div class="wedding-day__header">
@@ -472,8 +498,9 @@
 
 
     <!-- ── Zone 4: Venue sub-section (dark green) ────────────── -->
-    <div id="the-venue" class="wedding-day__venue">
+    <div id="the-venue" class="wedding-day__venue" data-nav-light>
 
+      <div class="venue__inner">
       <div class="venue__left">
         <p class="venue__overline">The Venue</p>
         <h2 class="venue__name">Ballintubbert<br>Gardens &amp; House</h2>
@@ -486,7 +513,9 @@
         <p class="venue__address">Ballintubbert House, Ballintubbert, Stradbally, Co. Laois, R14 E954, Ireland</p>
       </div>
 
+    </div>
     </div><!-- /.wedding-day__venue -->
+
 
   </section>
 
@@ -518,6 +547,7 @@
        Background: #efe6d3
   ============================================================ -->
   <section id="day-two" class="event-section" aria-labelledby="day-two-heading">
+    <div class="event-section__inner">
     <header class="event-section__header">
       <h2 id="day-two-heading">Day Two Celebration</h2>
       <div class="event-section__meta">
@@ -555,6 +585,7 @@
         <p>Ballintubbert House, Ballintubbert, Stradbally, Co. Laois, R14 E954, Ireland</p>
 
       </div>
+    </div>
     </div>
 
   </section>
@@ -781,7 +812,7 @@
        SECTION 11 — Common Questions
        Accordion. Background: --color-green-dark (#43461f)
   ============================================================ -->
-  <section id="common-questions" aria-labelledby="faq-heading">
+  <section id="common-questions" aria-labelledby="faq-heading" data-nav-light>
     <div class="faq__inner">
 
       <div class="faq__layout">
@@ -794,8 +825,10 @@
             <button class="faq__question" aria-expanded="false" aria-controls="faq-answer-1">
               Can I bring a guest?
             </button>
-            <div id="faq-answer-1" class="faq__answer" hidden>
-              <p>We kindly ask you to please stick to the names listed on your invitation. That means no unexpected plus ones.</p>
+            <div id="faq-answer-1" class="faq__answer">
+              <div class="faq__answer-inner">
+                <p>We kindly ask you to please stick to the names listed on your invitation. That means no unexpected plus ones.</p>
+              </div>
             </div>
           </article>
 
@@ -803,8 +836,10 @@
             <button class="faq__question" aria-expanded="false" aria-controls="faq-answer-2">
               What if I have dietary restrictions?
             </button>
-            <div id="faq-answer-2" class="faq__answer" hidden>
-              <p>Please let us know when sharing your RSVP. We are happy to accommodate to ensure everyone has a happy (and delicious) experience.</p>
+            <div id="faq-answer-2" class="faq__answer">
+              <div class="faq__answer-inner">
+                <p>Please let us know when sharing your RSVP. We are happy to accommodate to ensure everyone has a happy (and delicious) experience.</p>
+              </div>
             </div>
           </article>
 
@@ -812,9 +847,11 @@
             <button class="faq__question" aria-expanded="false" aria-controls="faq-answer-3">
               Do I need to rent a car? Do I need an international license?
             </button>
-            <div id="faq-answer-3" class="faq__answer" hidden>
-              <p>Renting a car is the easiest way to get there and get around during your stay. Ubers and taxis are available, but they can be expensive, especially if you&rsquo;re traveling longer distances. Carpooling is recommended too.</p>
-              <p>You do not need an international driver&rsquo;s license to drive in Ireland. Your valid U.S. driver&rsquo;s license is accepted &mdash; just remember that in Ireland people drive on the left side of the road.</p>
+            <div id="faq-answer-3" class="faq__answer">
+              <div class="faq__answer-inner">
+                <p>Renting a car is the easiest way to get there and get around during your stay. Ubers and taxis are available, but they can be expensive, especially if you&rsquo;re traveling longer distances. Carpooling is recommended too.</p>
+                <p>You do not need an international driver&rsquo;s license to drive in Ireland. Your valid U.S. driver&rsquo;s license is accepted &mdash; just remember that in Ireland people drive on the left side of the road.</p>
+              </div>
             </div>
           </article>
 
@@ -822,8 +859,10 @@
             <button class="faq__question" aria-expanded="false" aria-controls="faq-answer-4">
               Is there parking?
             </button>
-            <div id="faq-answer-4" class="faq__answer" hidden>
-              <p>Yes! On-site parking will be available, but we absolutely recommend carpooling or taxis if you are staying nearby.</p>
+            <div id="faq-answer-4" class="faq__answer">
+              <div class="faq__answer-inner">
+                <p>Yes! On-site parking will be available, but we absolutely recommend carpooling or taxis if you are staying nearby.</p>
+              </div>
             </div>
           </article>
 
@@ -831,8 +870,10 @@
             <button class="faq__question" aria-expanded="false" aria-controls="faq-answer-5">
               What&rsquo;s the weather like in Ireland?
             </button>
-            <div id="faq-answer-5" class="faq__answer" hidden>
-              <p>To put it simply: unpredictable. Ireland is known for experiencing all four seasons within one day, but we are hoping for a sunny weekend! We plan to have the wedding outdoors in the garden, but of course have a backup plan if needed.</p>
+            <div id="faq-answer-5" class="faq__answer">
+              <div class="faq__answer-inner">
+                <p>To put it simply: unpredictable. Ireland is known for experiencing all four seasons within one day, but we are hoping for a sunny weekend! We plan to have the wedding outdoors in the garden, but of course have a backup plan if needed.</p>
+              </div>
             </div>
           </article>
 
@@ -840,8 +881,10 @@
             <button class="faq__question" aria-expanded="false" aria-controls="faq-answer-6">
               Can I take photos during the ceremony?
             </button>
-            <div id="faq-answer-6" class="faq__answer" hidden>
-              <p>We&rsquo;d love for everyone to be rooted with us in the present moment, so we kindly ask for no phones and cameras during the ceremony. Outside of this moment, grab all the content you&rsquo;d like! We&rsquo;ll have a live album at the following link and would love for you to download the app to upload your photos.</p>
+            <div id="faq-answer-6" class="faq__answer">
+              <div class="faq__answer-inner">
+                <p>We&rsquo;d love for everyone to be rooted with us in the present moment, so we kindly ask for no phones and cameras during the ceremony. Outside of this moment, grab all the content you&rsquo;d like! We&rsquo;ll have a live album at the following link and would love for you to download the app to upload your photos.</p>
+              </div>
             </div>
           </article>
 
@@ -849,8 +892,10 @@
             <button class="faq__question" aria-expanded="false" aria-controls="faq-answer-7">
               Do I need to come to all listed events?
             </button>
-            <div id="faq-answer-7" class="faq__answer" hidden>
-              <p>That is completely up to you! We&rsquo;d love to have all of our friends and family with us for everything, but completely understand if you can only join us for part of the weekend.</p>
+            <div id="faq-answer-7" class="faq__answer">
+              <div class="faq__answer-inner">
+                <p>That is completely up to you! We&rsquo;d love to have all of our friends and family with us for everything, but completely understand if you can only join us for part of the weekend.</p>
+              </div>
             </div>
           </article>
 
@@ -912,27 +957,25 @@
     <!-- Background image is set via CSS background-image -->
 
     <div class="countdown__display">
-
       <div class="countdown__unit">
-        <span class="countdown__number" id="countdown-days"></span>
+        <span class="countdown__number" id="countdown-days">--</span>
         <span class="countdown__label">Days</span>
       </div>
       <span class="countdown__colon" aria-hidden="true">:</span>
       <div class="countdown__unit">
-        <span class="countdown__number" id="countdown-hours"></span>
+        <span class="countdown__number" id="countdown-hours">--</span>
         <span class="countdown__label">Hours</span>
       </div>
       <span class="countdown__colon" aria-hidden="true">:</span>
       <div class="countdown__unit">
-        <span class="countdown__number" id="countdown-minutes"></span>
+        <span class="countdown__number" id="countdown-minutes">--</span>
         <span class="countdown__label">Minutes</span>
       </div>
       <span class="countdown__colon" aria-hidden="true">:</span>
       <div class="countdown__unit">
-        <span class="countdown__number" id="countdown-seconds"></span>
+        <span class="countdown__number" id="countdown-seconds">--</span>
         <span class="countdown__label">Seconds</span>
       </div>
-
     </div>
 
     <!-- Shown after wedding date has passed -->
@@ -941,37 +984,71 @@
 
 
   <!-- ============================================================
-       SECTION 14 — Nav (The Paper Note)
-       Fixed, bottom-left. Unfurls on click.
+       SECTION 14 — Nav
+       Fixed top-right. Toggle button always visible.
+       Panel slides in on click: 25vw desktop, 100vw mobile.
   ============================================================ -->
-  <nav id="site-nav" class="site-nav" aria-label="Site navigation">
-    <!-- Collapsed state: folded paper corner -->
-    <button
-      class="site-nav__toggle"
-      aria-expanded="false"
-      aria-controls="site-nav__menu"
-      aria-label="Open navigation menu"
-    >
-      <span class="site-nav__corner-label">Menu</span>
-    </button>
 
-    <!-- Expanded state: open paper note with links -->
-    <div id="site-nav__menu" class="site-nav__menu" hidden>
-      <ul>
-        <li><a href="#hero">Home</a></li>
-        <li><a href="#our-story">Our Story</a></li>
-        <li><a href="#welcome-dublin">Welcome to Dublin</a></li>
-        <li><a href="#night-before">The Night Before</a></li>
-        <li><a href="#wedding-day">Our Wedding Day</a></li>
-        <li><a href="#day-two">Day Two</a></li>
-        <li><a href="#the-venue">The Venue</a></li>
-        <li><a href="#getting-there">Getting There</a></li>
-        <li><a href="#where-to-stay">Where to Stay</a></li>
-        <li><a href="#common-questions">Questions</a></li>
-        <li><a href="#gifts">Gifts</a></li>
-        <li><a href="https://rsvp-link-tbd.com" target="_blank" rel="noopener noreferrer">RSVP</a></li>
-      </ul>
+  <!-- Toggle button — always visible, sits above the panel -->
+  <button
+    class="site-nav__toggle"
+    aria-expanded="false"
+    aria-controls="site-nav__panel"
+    aria-label="Open navigation menu"
+  >
+    <span class="site-nav__toggle-labels"><span class="site-nav__toggle-close">CLOSE </span><span class="site-nav__toggle-menu">MENU</span></span>
+  </button>
+
+  <!-- Panel — hidden until toggle is clicked -->
+  <nav
+    id="site-nav__panel"
+    class="site-nav__panel"
+    aria-label="Site navigation"
+    hidden
+  >
+
+    <!-- Nav links -->
+    <ul class="site-nav__list">
+      <li class="site-nav__item"><a class="site-nav__link" href="#hero"><span class="site-nav__label">Home</span><span class="site-nav__numeral">I</span></a></li>
+      <li class="site-nav__item"><a class="site-nav__link" href="#our-story"><span class="site-nav__label">Our Story</span><span class="site-nav__numeral">II</span></a></li>
+      <li class="site-nav__item"><a class="site-nav__link" href="#welcome-dublin"><span class="site-nav__label">Welcome to Dublin</span><span class="site-nav__numeral">III</span></a></li>
+      <li class="site-nav__item"><a class="site-nav__link" href="#night-before"><span class="site-nav__label">The Night Before</span><span class="site-nav__numeral">IV</span></a></li>
+      <li class="site-nav__item"><a class="site-nav__link" href="#wedding-day"><span class="site-nav__label">Our Wedding Day</span><span class="site-nav__numeral">V</span></a></li>
+      <li class="site-nav__item"><a class="site-nav__link" href="#day-two"><span class="site-nav__label">Day Two</span><span class="site-nav__numeral">VI</span></a></li>
+      <li class="site-nav__item"><a class="site-nav__link" href="#the-venue"><span class="site-nav__label">The Venue</span><span class="site-nav__numeral">VII</span></a></li>
+      <li class="site-nav__item"><a class="site-nav__link" href="#getting-there"><span class="site-nav__label">Getting There</span><span class="site-nav__numeral">VIII</span></a></li>
+      <li class="site-nav__item"><a class="site-nav__link" href="#where-to-stay"><span class="site-nav__label">Where to Stay</span><span class="site-nav__numeral">IX</span></a></li>
+      <li class="site-nav__item"><a class="site-nav__link" href="#common-questions"><span class="site-nav__label">Questions</span><span class="site-nav__numeral">X</span></a></li>
+      <li class="site-nav__item"><a class="site-nav__link" href="#gifts"><span class="site-nav__label">Gifts</span><span class="site-nav__numeral">XI</span></a></li>
+    </ul>
+
+    <!-- RSVP button — wrapper is the overflow:hidden mask, inner <a> slides into it -->
+    <div class="site-nav__rsvp-wrap">
+      <a
+        href="https://rsvp-link-tbd.com"
+        class="site-nav__rsvp"
+        target="_blank"
+        rel="noopener noreferrer"
+      >RSVP</a>
     </div>
+
+    <!-- Contact section — same mask pattern -->
+    <div class="site-nav__contact-wrap">
+      <div class="site-nav__contact">
+        <p class="site-nav__contact-title">Have any questions? We'd be happy to help.</p>
+        <div class="site-nav__contact-person">
+          <p class="site-nav__contact-name">Eoin</p>
+          <a class="site-nav__contact-detail" href="mailto:ebolger19@gmail.com">ebolger19@gmail.com</a>
+          <a class="site-nav__contact-detail" href="tel:+353860354040">+353 86 035 4040</a>
+        </div>
+        <div class="site-nav__contact-person">
+          <p class="site-nav__contact-name">Ashley</p>
+          <a class="site-nav__contact-detail" href="mailto:ashley.weinaug@gmail.com">ashley.weinaug@gmail.com</a>
+          <a class="site-nav__contact-detail" href="tel:+34662413264">+34 662 413 264</a>
+        </div>
+      </div>
+    </div>
+
   </nav>
 
 
