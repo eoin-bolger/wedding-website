@@ -123,9 +123,15 @@
 
 
   <!-- ============================================================
-       SECTION 3 — Our Story ⚠️ STATIC PLACEHOLDER
+       OUR STORY + PROPOSAL STACK
+       Our Story sticks at top: 0 while Proposal slides over it.
+       Same pattern as the hero-intro-stack.
+  ============================================================ -->
+  <div class="story-proposal-stack">
+
+  <!-- ============================================================
+       SECTION 3 — Our Story
        Full bleed floral background. Two envelope fronts side by side.
-       Envelope open/letter animation will be added in a separate build phase.
   ============================================================ -->
   <section id="our-story" aria-labelledby="our-story-heading">
 
@@ -136,6 +142,8 @@
 
       <!-- Ashley's envelope — tilted left -->
       <div class="envelope-wrapper envelope-wrapper--ashley">
+        <!-- Shadow lives on a sibling so .envelope's clip-path (during letter extraction) can't clip it -->
+        <div class="envelope__shadow-box" aria-hidden="true"></div>
         <div class="envelope">
 
           <!-- Flap first in DOM = paints behind the front face (later DOM = paints on top) -->
@@ -155,8 +163,7 @@
             <div class="envelope__fold-line envelope__fold-line--lower" aria-hidden="true"></div>
             <div class="envelope__letter-inner">
               <p>You know the line, "We found love in a hopeless place?" That was me and Eoin's story. On March 11, 2023, we both had spent the day out (me at a calçotada, him golfing) and happened to find our way later into a sports bar attached to a hostel in Barcelona city center (a place I would not typically frequent 🙃). I ran into a friend of a friend, he invited me over to his table with his friends, and that was the first time Eoin and I met. I was there with my friend Dan and we all spent the evening drinking and hanging out together. At one point, I whispered to Dan that I thought Eoin was cute. When I went to the bar to order a round of drinks, Eoin asked Dan something about us being together, and Dan replied, "Oh no… we're not a couple. I have a boyfriend and she's into you." From the moment I returned, I felt a shift in the energy and eventually Eoin moved closer to me as friends, one by one, left. Then when it was just the two of us left, he kissed me.</p>
-              <p>Everything felt so effortless and just made sense with us. Over the next few weeks, we dated and I knew pretty quickly Eoin was nothing like guys I've dated in the past… we often joke that we share a brain because we are always thinking the same things. Soon after, on May 14, I asked Eoin to be my boyfriend (since he was taking so long to ask me). In August, I went to Ireland with him for the first time and met his entire family. Again, everything just felt right. They were so lovely and welcoming and were the type of family I dreamt of marrying into. In September, on a trip to Madrid, my dad and stepmom met Eoin and his dad for the first time. In January 2024, I brought Eoin home to America for the first time where he met my friends and mom. We moved in together. On our one year anniversary, we adopted our cat Roísin.</p>
-              <p>Then, on May 27, 2024 at Muckross House in Killarney National Park, in front of my dad, stepmom, and Eoin's dad, Eoin asked me to marry him! It was an easy yes and I wouldn't have changed a thing about it (okay, maybe I would have changed my outfit).</p>
+              <p>Everything felt so effortless and just made sense with us. Over the next few weeks, we dated and I knew pretty quickly Eoin was nothing like guys I've dated in the past… we often joke that we share a brain because we are always thinking the same things. Soon after, on May 14, I asked Eoin to be my boyfriend (since he was taking so long to ask me). In August, I went to Ireland with him for the first time and met his entire family. Again, everything just felt right. They were so lovely and welcoming and were the type of family I dreamt of marrying into. In September, on a trip to Madrid, my dad and stepmom met Eoin and his dad for the first time. In January 2024, I brought Eoin home to America for the first time where he met my friends and mom.</p>
               <p class="envelope__signature">Ashley</p>
             </div>
           </div>
@@ -166,6 +173,8 @@
 
       <!-- Eoin's envelope — tilted right -->
       <div class="envelope-wrapper envelope-wrapper--eoin">
+        <!-- Shadow lives on a sibling so .envelope's clip-path can't clip it -->
+        <div class="envelope__shadow-box" aria-hidden="true"></div>
         <div class="envelope">
 
           <!-- Flap first in DOM = paints behind the front face -->
@@ -180,10 +189,15 @@
             </div>
           </div>
 
-          <!-- Animation scaffolding — hidden, built in a later session -->
           <div class="envelope__letter" aria-hidden="true">
             <div class="envelope__fold-line envelope__fold-line--upper" aria-hidden="true"></div>
             <div class="envelope__fold-line envelope__fold-line--lower" aria-hidden="true"></div>
+            <div class="envelope__letter-inner">
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+              <p>Cras mattis consectetur purus sit amet fermentum. Maecenas faucibus mollis interdum. Donec sed odio dui. Nullam quis risus eget urna mollis ornare vel eu leo. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean lacinia bibendum nulla sed consectetur. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Etiam porta sem malesuada magna mollis euismod.</p>
+              <p>Nulla vitae elit libero, a pharetra augue. Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+              <p class="envelope__signature">Eoin</p>
+            </div>
           </div>
 
         </div>
@@ -193,13 +207,14 @@
 
   </section>
 
+  <!-- Scroll spacer: provides 800vh of scroll distance for the
+       envelope animation while Our Story is position: sticky.
+       Invisible — scrolls behind the stuck section. -->
+  <div class="story-scroll-spacer" aria-hidden="true"></div>
 
   <!-- ============================================================
        SECTION 4 — Proposal Photo
-       Full-bleed 100vw photo. No text.
-       ANIMATION (future): sticky/GSAP pin — slides up from below to
-       cover #our-story as user scrolls past it. ScrollTrigger trigger
-       = end of #our-story, scrub, translateY(100vh → 0).
+       Full-bleed 100vw photo. Scrolls up over Our Story.
   ============================================================ -->
   <section id="proposal" aria-label="Proposal photo">
     <img
@@ -211,6 +226,20 @@
     />
   </section>
 
+  </div><!-- /.story-proposal-stack -->
+
+
+  <!-- ============================================================
+       The Order of Events — Transitional heading
+       Introduces the wedding weekend before detailed event sections.
+  ============================================================ -->
+  <section id="order-of-events" aria-labelledby="order-heading">
+    <div class="order-of-events__content">
+      <h2 id="order-heading">The Order of Events</h2>
+      <p class="order-of-events__body">What begins with a welcome in Dublin unfolds into three unforgettable days at Ballintubbert Gardens & House, County Laois. Below, you&rsquo;ll find the details for each celebration &mdash; when to arrive, what to wear, and everything in between.</p>
+    </div>
+  </section>
+
 
   <!-- ============================================================
        SECTION 5 — Welcome to Dublin
@@ -220,7 +249,7 @@
 
     <div class="event-section__inner">
     <header class="event-section__header">
-      <h2 id="dublin-heading">Welcome to Dublin</h2>
+      <h3 id="dublin-heading">Welcome to Dublin</h3>
       <div class="event-section__meta">
         <p class="event-section__date">Wednesday, August 19th</p>
         <span class="event-section__badge">Attendance Optional</span>
@@ -297,7 +326,7 @@
   <section id="night-before" class="event-section" aria-labelledby="night-before-heading">
     <div class="event-section__inner">
     <header class="event-section__header">
-      <h2 id="night-before-heading">The Night Before</h2>
+      <h3 id="night-before-heading">The Night Before</h3>
       <div class="event-section__meta">
         <p class="event-section__date">Thursday, August 20th</p>
         <span class="event-section__badge">Attendance Optional</span>
@@ -374,7 +403,7 @@
       <!-- Centred overline + heading -->
       <div class="wedding-day__header">
         <p class="wedding-day__overline">Friday, August 21st</p>
-        <h2 id="wedding-day-heading">Our Wedding Day</h2>
+        <h3 id="wedding-day-heading">Our Wedding Day</h3>
       </div>
 
       <!-- Three equal columns: pull quote | photo | intro copy -->
@@ -488,13 +517,15 @@
 
 
     <!-- ── Zone 3: Full-bleed venue photo ────────────────────── -->
-    <img
-      src="images/ballintubbert-house.webp"
-      alt="Ballintubbert Gardens and House"
-      width="911"
-      height="1617"
-      class="wedding-day__venue-photo"
-    />
+    <div class="wedding-day__venue-photo-wrap">
+      <img
+        src="images/ballintubbert-house.webp"
+        alt="Ballintubbert Gardens and House"
+        width="911"
+        height="1617"
+        class="wedding-day__venue-photo"
+      />
+    </div>
 
 
     <!-- ── Zone 4: Venue sub-section (dark green) ────────────── -->
@@ -549,7 +580,7 @@
   <section id="day-two" class="event-section" aria-labelledby="day-two-heading">
     <div class="event-section__inner">
     <header class="event-section__header">
-      <h2 id="day-two-heading">Day Two Celebration</h2>
+      <h3 id="day-two-heading">Day Two Celebration</h3>
       <div class="event-section__meta">
         <p class="event-section__date">Saturday, August 22nd</p>
         <span class="event-section__badge">Attendance Optional</span>
@@ -907,6 +938,9 @@
   </section>
 
 
+  <!-- Gifts-over-Countdown reveal: countdown sticks at bottom, gifts scrolls up to reveal it -->
+  <div class="gifts-countdown-stack">
+
   <!-- ============================================================
        SECTION 12 — Gifts
        Background: --color-bg-default (#eeeade)
@@ -982,6 +1016,8 @@
     <p class="countdown__married-message" hidden>We're married!</p>
   </section>
 
+  </div><!-- /.gifts-countdown-stack -->
+
 
   <!-- ============================================================
        SECTION 14 — Nav
@@ -1011,15 +1047,12 @@
     <ul class="site-nav__list">
       <li class="site-nav__item"><a class="site-nav__link" href="#hero"><span class="site-nav__label">Home</span><span class="site-nav__numeral">I</span></a></li>
       <li class="site-nav__item"><a class="site-nav__link" href="#our-story"><span class="site-nav__label">Our Story</span><span class="site-nav__numeral">II</span></a></li>
-      <li class="site-nav__item"><a class="site-nav__link" href="#welcome-dublin"><span class="site-nav__label">Welcome to Dublin</span><span class="site-nav__numeral">III</span></a></li>
-      <li class="site-nav__item"><a class="site-nav__link" href="#night-before"><span class="site-nav__label">The Night Before</span><span class="site-nav__numeral">IV</span></a></li>
-      <li class="site-nav__item"><a class="site-nav__link" href="#wedding-day"><span class="site-nav__label">Our Wedding Day</span><span class="site-nav__numeral">V</span></a></li>
-      <li class="site-nav__item"><a class="site-nav__link" href="#day-two"><span class="site-nav__label">Day Two</span><span class="site-nav__numeral">VI</span></a></li>
-      <li class="site-nav__item"><a class="site-nav__link" href="#the-venue"><span class="site-nav__label">The Venue</span><span class="site-nav__numeral">VII</span></a></li>
-      <li class="site-nav__item"><a class="site-nav__link" href="#getting-there"><span class="site-nav__label">Getting There</span><span class="site-nav__numeral">VIII</span></a></li>
-      <li class="site-nav__item"><a class="site-nav__link" href="#where-to-stay"><span class="site-nav__label">Where to Stay</span><span class="site-nav__numeral">IX</span></a></li>
-      <li class="site-nav__item"><a class="site-nav__link" href="#common-questions"><span class="site-nav__label">Questions</span><span class="site-nav__numeral">X</span></a></li>
-      <li class="site-nav__item"><a class="site-nav__link" href="#gifts"><span class="site-nav__label">Gifts</span><span class="site-nav__numeral">XI</span></a></li>
+      <li class="site-nav__item"><a class="site-nav__link" href="#order-of-events"><span class="site-nav__label">The Order of Events</span><span class="site-nav__numeral">III</span></a></li>
+      <li class="site-nav__item"><a class="site-nav__link" href="#the-venue"><span class="site-nav__label">The Venue</span><span class="site-nav__numeral">IV</span></a></li>
+      <li class="site-nav__item"><a class="site-nav__link" href="#getting-there"><span class="site-nav__label">Getting There</span><span class="site-nav__numeral">V</span></a></li>
+      <li class="site-nav__item"><a class="site-nav__link" href="#where-to-stay"><span class="site-nav__label">Where to Stay</span><span class="site-nav__numeral">VI</span></a></li>
+      <li class="site-nav__item"><a class="site-nav__link" href="#common-questions"><span class="site-nav__label">Questions</span><span class="site-nav__numeral">VII</span></a></li>
+      <li class="site-nav__item"><a class="site-nav__link" href="#gifts"><span class="site-nav__label">Gifts</span><span class="site-nav__numeral">VIII</span></a></li>
     </ul>
 
     <!-- RSVP button — wrapper is the overflow:hidden mask, inner <a> slides into it -->

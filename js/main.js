@@ -545,8 +545,8 @@
     ease: 'none',
     scrollTrigger: {
       trigger: section,
-      start: 'top 75%',   /* begins when section top is 75% down the screen */
-      end: 'top -25%',    /* completes when section top is 25% past the top of screen */
+      start: 'top 60%',   /* begins when section top is 60% down the screen */
+      end: 'top 5%',      /* completes when section top is 5% from the top */
       scrub: true,
     },
   });
@@ -574,6 +574,7 @@
 
 (function initOurStoryEnvelopes() {
   var section           = document.getElementById('our-story');
+  var heading           = document.getElementById('our-story-heading');
   var ashley            = document.querySelector('.envelope-wrapper--ashley');
   var eoin              = document.querySelector('.envelope-wrapper--eoin');
   /* Inner .envelope card — this is what rotates (Ironhill two-level technique).
@@ -584,8 +585,6 @@
   var eoinFlap          = eoin   ? eoin.querySelector('.envelope__flap')          : null;
   var ashleyLetter      = ashley ? ashley.querySelector('.envelope__letter')      : null;
   var eoinLetter        = eoin   ? eoin.querySelector('.envelope__letter')        : null;
-  /* Inner scrolling div — GSAP slides it upward during reading pause */
-  var ashleyLetterInner = ashley ? ashley.querySelector('.envelope__letter-inner') : null;
   /* Fold-line creases — revealed during unfold */
   var ashleyFoldUpper   = ashley ? ashley.querySelector('.envelope__fold-line--upper') : null;
   var ashleyFoldLower   = ashley ? ashley.querySelector('.envelope__fold-line--lower') : null;
@@ -605,10 +604,7 @@
      Geometry: letter top edge = -(letterH/2) + y, relative to centre.
      Envelope top edge = -(envH/2).
      We need letter top ≥ envelope top → y ≥ letterH/2 - envH/2.
-     +20px ensures no sub-pixel bleed at the envelope top edge.
-
-     Desktop (620/2 - 360/2 + 20 = 150): letter top is 20px below
-     the envelope's top edge, fully hidden behind the front face. */
+     +20px ensures no sub-pixel bleed at the envelope top edge. */
 
   function getStartY(envEl, letterEl) {
     return letterEl.offsetHeight / 2 - envEl.offsetHeight / 2 + 20;
@@ -621,9 +617,7 @@
 
      Visible bottom of folded letter = y - letterH/6  (top 1/3 shown).
      Envelope top = -(envH/2).
-     Solve for: y - letterH/6 = -(envH/2) - 15px clearance.
-
-     Desktop: 620/6 - 360/2 - 15 ≈ -92 (letter rises ~242px total). */
+     Solve for: y - letterH/6 = -(envH/2) - 15px clearance. */
 
   function getExtractionY(envEl, letterEl) {
     return letterEl.offsetHeight / 6 - envEl.offsetHeight / 2 - 15;
@@ -644,6 +638,7 @@
 
 
   /* ── Initial state ─────────────────────────────────────────────────
+     Heading starts oversized (GSAP will scrub scale 2.5 → 1).
      Wrappers off-screen, cards edge-on (Ironhill technique).
      Letters: folded (clip shows top 1/3), pushed down inside envelope
      so folded portion is behind front face (zIndex: 0 < front's 1).
@@ -657,12 +652,14 @@
     y: getStartY(ashleyCard, ashleyLetter),
     clipPath: 'inset(0 0 66.66% 0)',
     zIndex: 0,
+    autoAlpha: 0, /* Hidden until extraction begins — avoids z-index paint-order issues on mobile */
   });
   gsap.set(eoinLetter, {
     xPercent: -50, yPercent: -50,
     y: getStartY(eoinCard, eoinLetter),
     clipPath: 'inset(0 0 66.66% 0)',
     zIndex: 0,
+    autoAlpha: 0,
   });
   gsap.set([ashleyFoldUpper, ashleyFoldLower, eoinFoldUpper, eoinFoldLower], { opacity: 0 });
 
@@ -681,6 +678,9 @@
     var ltl = gsap.timeline();
 
     ltl
+      /* Reveal letter — was autoAlpha: 0 to avoid z-index paint issues */
+      .set(letterEl, { autoAlpha: 1 })
+
       /* Parent clip — letter can only emerge upward from envelope */
       .set(cardEl, { clipPath: 'inset(-200% -200% 0 -200%)' })
 
@@ -712,6 +712,7 @@
       y: getStartY(cardEl, letterEl),
       clipPath: 'inset(0 0 66.66% 0)',
       zIndex: 0,
+      autoAlpha: 0, /* Re-hide for same z-index paint-order reason */
     });
     gsap.set(cardEl, { clipPath: 'none' });
     gsap.set([foldUpper, foldLower], { opacity: 0 });
@@ -719,29 +720,54 @@
 
 
   /* ── Scrubbed timeline ─────────────────────────────────────────────
-     Controls entrance, flap, and reading pause via scroll.
+     Controls title shrink, entrance, and flap via scroll.
      Letter extraction/unfold is triggered at a position via .call()
-     but plays independently at real-time speed. Dead space in the
-     timeline (1.6 → 3.2) gives the standalone ~1.55s to finish
-     before reading pause begins. */
+     but plays independently at real-time speed. Dead space after
+     each trigger (~1.6 units) gives the standalone ~1.55s to finish.
+
+     Title shrink runs on a SEPARATE ScrollTrigger (no pin) from
+     'top bottom' → 'top top' so it plays while the section scrolls
+     into view, finishing exactly when the pin takes over.
+
+     Timeline positions (pinned timeline):
+     0.6–1.2  Ashley entrance
+     1.3–1.6  Ashley flap
+     1.6      Ashley letter trigger → dead space until 3.2
+     3.2–3.8  Eoin entrance
+     3.9–4.2  Eoin flap
+     4.2      Eoin letter trigger → dead space until 5.8
+     5.8–6.3  End hold */
+
+  /* ── Title shrink — separate scroll range, before the pin ────── */
+  gsap.fromTo(heading, { scale: 5 }, {
+    scale: 1,
+    ease: 'power2.out',
+    scrollTrigger: {
+      trigger: section,
+      start: 'top bottom',
+      end: 'top -50%',
+      scrub: 1,
+    },
+  });
+
+  var spacer = document.querySelector('.story-scroll-spacer');
 
   var tl = gsap.timeline({
     scrollTrigger: {
-      trigger: section,
-      start: 'top top',
-      end: '+=800%',
-      pin: true,
+      trigger: spacer,
+      start: 'top bottom',   // spacer top at viewport bottom = Our Story at viewport top
+      end: 'bottom bottom',  // spacer bottom at viewport bottom = 800vh of scrub
       scrub: 1,
       invalidateOnRefresh: true,
     },
   });
 
   tl
-    /* ── 0.6–1.2: Ashley entrance ───────────────────────────────── */
+    /* ── 0.6–1.2: Ashley entrance ────────────────────────────────── */
     .to(ashley,     { x: 0, ease: 'power2.out', duration: 0.6 }, 0.6)
     .to(ashleyCard, { z: 0, rotateY: 0, ease: 'power2.out', duration: 0.6 }, 0.6)
 
-    /* ── 1.3–1.6: Ashley flap ───────────────────────────────────── */
+    /* ── 1.3–1.6: Ashley flap ────────────────────────────────────── */
     .to(ashleyFlap, { rotateX: 180, ease: 'power2.inOut', duration: 0.3 }, 1.3)
 
     /* ── 1.6: Trigger letter sequence (plays at real-time speed) ── */
@@ -760,28 +786,14 @@
       }
     }, null, 1.6)
 
-    /* ── 3.2–4.8: Reading pause — inner div scrolls to show text ── */
-    .to(ashleyLetterInner, {
-      y: function() {
-        var styles = getComputedStyle(ashleyLetter);
-        var contentHeight = ashleyLetter.clientHeight
-          - parseFloat(styles.paddingTop)
-          - parseFloat(styles.paddingBottom);
-        var overflow = ashleyLetterInner.scrollHeight - contentHeight;
-        return overflow > 0 ? -overflow : 0;
-      },
-      ease: 'none',
-      duration: 1.6,
-    }, 3.2)
+    /* ── 3.2–3.8: Eoin entrance ──────────────────────────────────── */
+    .to(eoin,     { x: 0, ease: 'power2.out', duration: 0.6 }, 3.2)
+    .to(eoinCard, { z: 0, rotateY: 0, ease: 'power2.out', duration: 0.6 }, 3.2)
 
-    /* ── 5.0–5.6: Eoin entrance ─────────────────────────────────── */
-    .to(eoin,     { x: 0, ease: 'power2.out', duration: 0.6 }, 5.0)
-    .to(eoinCard, { z: 0, rotateY: 0, ease: 'power2.out', duration: 0.6 }, 5.0)
+    /* ── 3.9–4.2: Eoin flap ──────────────────────────────────────── */
+    .to(eoinFlap, { rotateX: 180, ease: 'power2.inOut', duration: 0.3 }, 3.9)
 
-    /* ── 5.7–6.0: Eoin flap ─────────────────────────────────────── */
-    .to(eoinFlap, { rotateX: 180, ease: 'power2.inOut', duration: 0.3 }, 5.7)
-
-    /* ── 6.0: Trigger Eoin letter sequence ──────────────────────── */
+    /* ── 4.2: Trigger Eoin letter sequence ────────────────────────── */
     .call(function() {
       var dir = tl.scrollTrigger.direction;
       if (dir === 1) {
@@ -793,10 +805,10 @@
         if (eoinLetterTl) { eoinLetterTl.kill(); eoinLetterTl = null; }
         resetLetter(eoinLetter, eoinCard, eoinFoldUpper, eoinFoldLower);
       }
-    }, null, 6.0)
+    }, null, 4.2)
 
-    /* ── 7.5–8.0: End hold ──────────────────────────────────────── */
-    .to({}, { duration: 0.5 }, 7.5);
+    /* ── 5.8–6.3: End hold ───────────────────────────────────────── */
+    .to({}, { duration: 0.5 }, 5.8);
 }());
 
 
@@ -832,4 +844,525 @@
       scrub: true,
     },
   });
+}());
+
+
+/* ------------------------------------------------------------
+   Our Story parallax
+   Same pattern as the hero: Our Story is position: sticky so
+   it stays visible while Proposal slides over it. Without this
+   parallax, the section freezes completely. This tween drifts
+   the content upward slowly so it feels alive.
+   ------------------------------------------------------------ */
+
+(function initOurStoryParallax() {
+  var section  = document.getElementById('our-story');
+  var proposal = document.getElementById('proposal');
+  if (!section || !proposal) return;
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  gsap.to(section, {
+    yPercent: -15,
+    ease: 'none',
+    scrollTrigger: {
+      trigger: proposal,
+      start: 'top bottom',   // proposal enters viewport — overlap begins
+      end: 'top top',         // proposal covers Our Story — overlap ends
+      scrub: true,
+    },
+  });
+}());
+
+
+/* ------------------------------------------------------------
+   Order of Events entrance
+   Staggered fade-up: heading → paragraph. Plays once.
+   ------------------------------------------------------------ */
+
+(function initOrderOfEventsEntrance() {
+  var section = document.querySelector('#order-of-events');
+  if (!section) return;
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  var heading = section.querySelector('h2');
+  var body    = section.querySelector('.order-of-events__body');
+  if (!heading || !body) return;
+
+  gsap.set([heading, body], { autoAlpha: 0, y: 30 });
+
+  gsap.timeline({
+    scrollTrigger: {
+      trigger: section,
+      start: 'top 80%',
+      once: true,
+    },
+  })
+  .to(heading, { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out' })
+  .to(body,    { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out' }, 0.2);
+}());
+
+
+/* ------------------------------------------------------------
+   Event section entrances (sections 5, 6, 8)
+   Staggered fade-up: header → left column → right column.
+   Plays once when section scrolls into view. Wedding Day
+   (section 7) is excluded — handled separately.
+   ------------------------------------------------------------ */
+
+(function initEventSectionEntrances() {
+  var sections = document.querySelectorAll('#welcome-dublin, #night-before, #day-two');
+  if (!sections.length) return;
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  sections.forEach(function(section) {
+    var header = section.querySelector('.event-section__header');
+    var cols   = section.querySelectorAll('.event-section__col');
+    if (!header || !cols.length) return;
+
+    /* Initial state: hidden and shifted down */
+    gsap.set(header, { autoAlpha: 0, y: 30 });
+    gsap.set(cols,   { autoAlpha: 0, y: 30 });
+
+    /* Staggered entrance: header → left col → right col */
+    gsap.timeline({
+      scrollTrigger: {
+        trigger: section,
+        start: 'top 80%',
+        once: true,
+      },
+    })
+    .to(header, { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out' })
+    .to(cols,   { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out', stagger: 0.2 }, 0.2);
+  });
+}());
+
+
+/* ------------------------------------------------------------
+   Section 7 — Wedding Day animations
+   Four zones, each with distinct treatment:
+   1. Upper (dark green): staggered entrance + fountain parallax
+   2. Timeline (cream): events scrub in from sides + centre line draws
+   3. Venue photo: parallax within container
+   4. Venue info: fade-in (same pattern as event sections)
+   ------------------------------------------------------------ */
+
+(function initWeddingDayAnimations() {
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  gsap.registerPlugin(ScrollTrigger);
+
+
+  /* ── Zone 1: Upper section — staggered entrance ──────────────
+     Each group fades up (autoAlpha 0→1, y 30→0) in sequence.
+     Plays once when the section scrolls into view. */
+
+  var wdHeader   = document.querySelector('.wedding-day__header');
+  var threeCol   = document.querySelector('.wedding-day__three-col');
+  var dividers   = document.querySelectorAll('.wedding-day__divider');
+  var attire     = document.querySelector('.wedding-day__attire');
+
+  if (wdHeader && threeCol && attire && dividers.length >= 2) {
+    /* Build array in visual reading order */
+    var zone1Items = [wdHeader, threeCol, dividers[0], attire, dividers[1]];
+
+    /* Initial state: hidden and shifted down */
+    gsap.set(zone1Items, { autoAlpha: 0, y: 30 });
+
+    /* Staggered entrance — each beat offset from the previous */
+    var zone1Tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: '.wedding-day__upper',
+        start: 'top 80%',
+        once: true,
+      },
+    });
+
+    /* Beat 1: header */
+    zone1Tl.to(wdHeader, { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out' });
+    /* Beat 2: 3-col grid (0.2s after header starts) */
+    zone1Tl.to(threeCol, { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out' }, 0.2);
+    /* Beat 3: first divider */
+    zone1Tl.to(dividers[0], { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out' }, '+=0.15');
+    /* Beat 4: attire block */
+    zone1Tl.to(attire, { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out' }, '+=0.15');
+    /* Beat 5: second divider */
+    zone1Tl.to(dividers[1], { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out' }, '+=0.15');
+  }
+
+
+  /* ── Zone 1: Fountain photo parallax ─────────────────────────
+     Image is 120% tall (CSS). GSAP shifts it from yPercent: -10
+     (top cropped) to 0 (bottom cropped) as you scroll past. */
+
+  var fountainWrap  = document.querySelector('.wedding-day__fountain-wrap');
+  var fountainPhoto = document.querySelector('.wedding-day__fountain-photo');
+
+  if (fountainWrap && fountainPhoto) {
+    gsap.fromTo(fountainPhoto,
+      { yPercent: -10 },
+      {
+        yPercent: 0,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: fountainWrap,
+          start: 'top bottom',   /* photo enters viewport */
+          end: 'bottom top',     /* photo leaves viewport */
+          scrub: true,
+        },
+      }
+    );
+  }
+
+
+  /* ── Zone 2: Timeline events — scrub from sides ──────────────
+     Left column events slide in from left (x: -30 → 0).
+     Right column events slide in from right (x: 30 → 0).
+     Each event has its own ScrollTrigger for individual timing. */
+
+  var leftEvents  = document.querySelectorAll('.timeline__col--left .timeline__event');
+  var rightEvents = document.querySelectorAll('.timeline__col--right .timeline__event');
+
+  leftEvents.forEach(function(event) {
+    gsap.set(event, { autoAlpha: 0, x: -30 });
+    gsap.to(event, {
+      autoAlpha: 1, x: 0,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: event,
+        start: 'top 90%',
+        end: 'top 60%',
+        scrub: true,
+      },
+    });
+  });
+
+  rightEvents.forEach(function(event) {
+    gsap.set(event, { autoAlpha: 0, x: 30 });
+    gsap.to(event, {
+      autoAlpha: 1, x: 0,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: event,
+        start: 'top 90%',
+        end: 'top 60%',
+        scrub: true,
+      },
+    });
+  });
+
+
+  /* ── Zone 2: Centre line draws on scroll ─────────────────────
+     GSAP animates the --line-progress CSS variable on the
+     timeline section. The ::before pseudo-element reads it via
+     scaleY(var(--line-progress)), drawing top-to-bottom. */
+
+  var timelineSection = document.querySelector('.wedding-day__timeline-section');
+
+  var timelineGrid = document.querySelector('.wedding-day__timeline');
+
+  if (timelineSection && timelineGrid) {
+    gsap.to(timelineSection, {
+      '--line-progress': 1,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: timelineGrid,       /* Content area, not the padded section */
+        start: 'top 90%',            /* Same as first event's start */
+        end: 'bottom 60%',           /* When last event's top hits 60% */
+        scrub: true,
+      },
+    });
+  }
+
+
+  /* ── Zone 3: Venue photo parallax ────────────────────────────
+     Same technique as fountain: image is 120% tall (CSS),
+     GSAP drifts it from yPercent: -10 to 0 on scroll. */
+
+  var venuePhotoWrap = document.querySelector('.wedding-day__venue-photo-wrap');
+  var venuePhoto     = document.querySelector('.wedding-day__venue-photo');
+
+  if (venuePhotoWrap && venuePhoto) {
+    gsap.fromTo(venuePhoto,
+      { yPercent: -10 },
+      {
+        yPercent: 0,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: venuePhotoWrap,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: true,
+        },
+      }
+    );
+  }
+
+
+  /* ── Zone 4: Venue info — staggered fade-in ──────────────────
+     Same pattern as event sections: left column first,
+     right column 0.2s later. Plays once. */
+
+  var venueLeft  = document.querySelector('.venue__left');
+  var venueRight = document.querySelector('.venue__right');
+
+  if (venueLeft && venueRight) {
+    gsap.set([venueLeft, venueRight], { autoAlpha: 0, y: 30 });
+
+    gsap.timeline({
+      scrollTrigger: {
+        trigger: '#the-venue',
+        start: 'top 80%',
+        once: true,
+      },
+    })
+    .to(venueLeft,  { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out' })
+    .to(venueRight, { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out' }, 0.2);
+  }
+
+}());
+
+
+/* ------------------------------------------------------------
+   Section 9 — How to Get There animations
+   Three layers:
+   1. Heading + text + map — fade-in (play-once, event-section pattern)
+   2. Polaroids — slide up from below (play-once, staggered)
+   3. Route dot — draws Dublin → Ballintubbert on scrub
+   ------------------------------------------------------------ */
+
+(function initGettingThereAnimations() {
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  var section       = document.getElementById('getting-there');
+  if (!section) return;
+
+  var heading       = document.getElementById('getting-there-heading');
+  var textCol       = section.querySelector('.getting-there__text');
+  var map           = section.querySelector('.getting-there__map');
+  var backPolaroid  = section.querySelector('.getting-there__polaroid--back');
+  var frontPolaroid = section.querySelector('.getting-there__polaroid--front');
+  var routeSvg      = section.querySelector('.getting-there__route');
+
+
+  /* ── Fade in: heading, text, map (play-once) ──────────────── */
+
+  if (heading && textCol && map) {
+    gsap.set([heading, textCol, map], { autoAlpha: 0, y: 30 });
+
+    gsap.timeline({
+      scrollTrigger: {
+        trigger: section,
+        start: 'top 80%',
+        once: true,
+      },
+    })
+    .to(heading, { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out' })
+    .to(textCol, { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out' }, 0.2)
+    .to(map,     { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out' }, 0.2);
+  }
+
+
+  /* ── Polaroids: scrub up from below viewport ─────────────────
+     Both start a full viewport height below their CSS position.
+     A scrubbed timeline sequences them: back rises first across
+     timeline 0–1, front rises across 0.6–1.6. The overlap means
+     the front starts while the back is still finishing. */
+
+  if (backPolaroid && frontPolaroid) {
+    var offScreenY = window.innerHeight;
+    gsap.set(backPolaroid,  { autoAlpha: 0, y: offScreenY, rotation: 13.308 });
+    gsap.set(frontPolaroid, { autoAlpha: 0, y: offScreenY, rotation: 8.62 });
+
+    var polaroidTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: section,
+        start: 'top 30%',
+        end: 'top -40%',
+        scrub: true,
+      },
+    });
+
+    /* Back polaroid: timeline positions 0–1 */
+    polaroidTl.to(backPolaroid, { autoAlpha: 1, y: 0, rotation: 13.308, duration: 1, ease: 'power2.out' }, 0);
+    /* Front polaroid: timeline positions 0.6–1.6 (starts when back is 60% done) */
+    polaroidTl.to(frontPolaroid, { autoAlpha: 1, y: 0, rotation: 8.62, duration: 1, ease: 'power2.out' }, 0.6);
+  }
+
+
+  /* ── Route: dot traces Dublin → Ballintubbert (scrub) ───────
+     Creates a path + circle inside the existing overlay SVG.
+     Stroke-dashoffset draws the line; getPointAtLength() moves
+     the dot to the leading edge on each scroll update. */
+
+  if (routeSvg) {
+    var svgNS = 'http://www.w3.org/2000/svg';
+
+    /* Approximate coordinates within viewBox 0 0 273 343.
+       Tweak these if the dot doesn't land on the right spot. */
+    var dublinX = 205, dublinY = 165;
+    var ballinX = 165, ballinY = 200;
+    /* Quadratic bezier control point — gentle southwest arc */
+    var cpX = 195, cpY = 190;
+
+    /* Route path */
+    var routePath = document.createElementNS(svgNS, 'path');
+    routePath.setAttribute('d',
+      'M ' + dublinX + ' ' + dublinY +
+      ' Q ' + cpX + ' ' + cpY +
+      ' ' + ballinX + ' ' + ballinY
+    );
+    routePath.setAttribute('stroke', '#43461f');
+    routePath.setAttribute('stroke-width', '2');
+    routePath.setAttribute('fill', 'none');
+    routePath.setAttribute('stroke-linecap', 'round');
+    routeSvg.appendChild(routePath);
+
+    /* Travelling dot */
+    var dot = document.createElementNS(svgNS, 'circle');
+    dot.setAttribute('cx', dublinX);
+    dot.setAttribute('cy', dublinY);
+    dot.setAttribute('r', '5');
+    dot.setAttribute('fill', '#43461f');
+    routeSvg.appendChild(dot);
+
+    /* Stroke-dasharray setup — fully hidden at start */
+    var totalLength = routePath.getTotalLength();
+    routePath.style.strokeDasharray = totalLength;
+    routePath.style.strokeDashoffset = totalLength;
+
+    /* Scrub: draw path + move dot to leading edge */
+    ScrollTrigger.create({
+      trigger: section,
+      start: 'top 30%',
+      end: 'top -40%',
+      scrub: true,
+      onUpdate: function(self) {
+        var progress = self.progress;
+        /* Draw the line from Dublin toward Ballintubbert */
+        routePath.style.strokeDashoffset = totalLength * (1 - progress);
+        /* Position dot at the leading edge of the drawn line */
+        var point = routePath.getPointAtLength(progress * totalLength);
+        dot.setAttribute('cx', point.x);
+        dot.setAttribute('cy', point.y);
+      },
+    });
+  }
+
+}());
+
+
+/* ------------------------------------------------------------
+   Section 10 — Where to Stay entrance
+   Staggered fade-up: heading → intro → two columns.
+   ------------------------------------------------------------ */
+
+(function initWhereToStayEntrance() {
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  var section = document.getElementById('where-to-stay');
+  if (!section) return;
+
+  var heading = document.getElementById('where-to-stay-heading');
+  var intro   = section.querySelector('.where-to-stay__intro');
+  var cols    = section.querySelectorAll('.where-to-stay__col');
+
+  if (!heading || !intro || !cols.length) return;
+
+  gsap.set([heading, intro], { autoAlpha: 0, y: 30 });
+  gsap.set(cols, { autoAlpha: 0, y: 30 });
+
+  gsap.timeline({
+    scrollTrigger: {
+      trigger: section,
+      start: 'top 80%',
+      once: true,
+    },
+  })
+  .to(heading, { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out' })
+  .to(intro,   { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out' }, 0.2)
+  .to(cols,    { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out', stagger: 0.2 }, 0.4);
+}());
+
+
+/* ------------------------------------------------------------
+   Section 11 — Common Questions entrance
+   Staggered fade-up: heading → each FAQ item one by one.
+   ------------------------------------------------------------ */
+
+(function initFaqEntrance() {
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  var section = document.getElementById('common-questions');
+  if (!section) return;
+
+  var heading  = section.querySelector('h2');
+  var faqItems = section.querySelectorAll('.faq__item');
+
+  if (!heading || !faqItems.length) return;
+
+  gsap.set(heading, { autoAlpha: 0, y: 30 });
+  gsap.set(faqItems, { autoAlpha: 0, y: 30 });
+
+  gsap.timeline({
+    scrollTrigger: {
+      trigger: section,
+      start: 'top 80%',
+      once: true,
+    },
+  })
+  .to(heading,  { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out' })
+  .to(faqItems, { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out', stagger: 0.1 }, 0.2);
+}());
+
+
+/* ------------------------------------------------------------
+   Section 12 — Gifts entrance
+   Staggered fade-up: header row → three cards.
+   ------------------------------------------------------------ */
+
+(function initGiftsEntrance() {
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  var section = document.getElementById('gifts');
+  if (!section) return;
+
+  var header = section.querySelector('.gifts__header');
+  var cards  = section.querySelectorAll('.gifts__card');
+
+  if (!header || !cards.length) return;
+
+  gsap.set(header, { autoAlpha: 0, y: 30 });
+  gsap.set(cards, { autoAlpha: 0, y: 30 });
+
+  gsap.timeline({
+    scrollTrigger: {
+      trigger: section,
+      start: 'top 80%',
+      once: true,
+    },
+  })
+  .to(header, { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out' })
+  .to(cards,  { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out', stagger: 0.15 }, 0.2);
 }());
