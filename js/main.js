@@ -97,7 +97,7 @@ function drawHeroDots() {
    down → names fade in → rings + flanking fade in.
    ------------------------------------------------------------ */
 
-(function initHeroEntrance() {
+function initHeroEntrance() {
   /* 1. Grab DOM elements */
   var portrait  = document.querySelector('.hero__portrait');
   var names     = document.querySelector('.hero__names');
@@ -224,7 +224,7 @@ function drawHeroDots() {
       }, 'rings');
     }
   }
-}());
+}
 
 
 /* ------------------------------------------------------------
@@ -1617,4 +1617,67 @@ function drawHeroDots() {
   })
   .to(header, { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out' })
   .to(cards,  { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out', stagger: 0.15 }, 0.2);
+}());
+
+
+/* ------------------------------------------------------------
+   Password gate
+   Checks localStorage for a previously authenticated session.
+   If found, removes the gate and runs the hero entrance.
+   If not, waits for the correct password before proceeding.
+   ------------------------------------------------------------ */
+
+(function initPasswordGate() {
+  var gate     = document.getElementById('password-gate');
+  var form     = document.getElementById('password-form');
+  var input    = document.getElementById('password-input');
+  var error    = document.getElementById('password-error');
+  var PASSWORD = 'slainte';
+  var STORAGE_KEY = 'ae-wedding-auth';
+
+  /* No gate in DOM — run hero entrance directly */
+  if (!gate) {
+    initHeroEntrance();
+    return;
+  }
+
+  /* Already authenticated — remove gate, run hero entrance */
+  if (localStorage.getItem(STORAGE_KEY) === 'true') {
+    gate.remove();
+    initHeroEntrance();
+    return;
+  }
+
+  /* Gate is showing — listen for form submit */
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    if (input.value.toLowerCase().trim() === PASSWORD) {
+      /* Correct — save to localStorage so they won't see the gate again */
+      localStorage.setItem(STORAGE_KEY, 'true');
+
+      /* Fade out the gate, then remove it and start the hero */
+      if (typeof gsap !== 'undefined') {
+        gsap.to(gate, {
+          opacity: 0,
+          duration: 0.5,
+          ease: 'power2.inOut',
+          onComplete: function() {
+            gate.remove();
+            initHeroEntrance();
+          },
+        });
+      } else {
+        gate.remove();
+        initHeroEntrance();
+      }
+    } else {
+      /* Wrong password — shake input and show error */
+      error.hidden = false;
+      input.classList.remove('password-gate__input--shake');
+      /* Force reflow so removing + re-adding the class restarts the animation */
+      void input.offsetWidth;
+      input.classList.add('password-gate__input--shake');
+    }
+  });
 }());

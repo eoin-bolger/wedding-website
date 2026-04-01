@@ -2528,3 +2528,124 @@ h4 {
     transition: none;
   }
 }
+
+
+/* ============================================================
+   PASSWORD GATE
+   Full-screen overlay that hides the site until password entered.
+   z-index: 10001 — above everything including nav toggle (10000).
+   ============================================================ */
+
+.password-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 10001;
+  background-color: var(--color-cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.password-gate[hidden] {
+  display: none;
+}
+
+.password-gate__content {
+  text-align: center;
+  padding: 0 var(--page-padding);
+  padding-top: 5vh; /* Nudge down — offsets visual top-heaviness of the title */
+}
+
+.password-gate__title {
+  font-family: var(--font-h1);
+  font-size: clamp(44px, calc(37px + 1.88vw), 64px);
+  line-height: 2;
+  color: var(--color-green-dark);
+  margin-bottom: 20px;
+}
+
+.password-gate__subtitle {
+  font-family: var(--font-body);
+  font-size: var(--size-body-sm);
+  color: var(--color-green-dark);
+  opacity: 0.55;
+  max-width: 320px;
+  margin: 0 auto 40px;
+  line-height: 1.6;
+}
+
+.password-gate__form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.password-gate__input {
+  font-family: var(--font-body);
+  font-size: var(--size-body-sm);
+  color: var(--color-green-dark);
+  background: transparent;
+  border: 1px solid rgba(67, 70, 31, 0.3);
+  padding: 14px 20px;
+  text-align: center;
+  outline: none;
+  transition: border-color 200ms ease;
+}
+
+.password-gate__input:focus {
+  border-color: var(--color-green-dark);
+}
+
+.password-gate__button {
+  font-family: var(--font-h4);
+  font-weight: 600;
+  font-size: var(--size-body-sm);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-cream);
+  background-color: var(--color-green-dark);
+  border: none;
+  padding: 14px 20px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Fill sweeps down from top on hover — same as RSVP button */
+.password-gate__button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-100%);
+  transition: transform 150ms ease-out;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .password-gate__button:hover::before {
+    transform: translateY(0);
+  }
+}
+
+.password-gate__error {
+  font-family: var(--font-body);
+  font-size: var(--size-body-sm);
+  color: #9a3a3a;
+  margin-top: 16px;
+}
+
+/* Shake animation for wrong password */
+@keyframes gate-shake {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(-8px); }
+  40%      { transform: translateX(8px); }
+  60%      { transform: translateX(-6px); }
+  80%      { transform: translateX(6px); }
+}
+
+.password-gate__input--shake {
+  animation: gate-shake 0.4s ease;
+  border-color: #9a3a3a;
+}

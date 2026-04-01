@@ -28,6 +28,30 @@
 <body>
 
   <!-- ============================================================
+       PASSWORD GATE
+       Full-screen overlay. Hides everything until the guest
+       enters the correct password. Removed by JS on success.
+  ============================================================ -->
+  <div id="password-gate" class="password-gate">
+    <div class="password-gate__content">
+      <h1 class="password-gate__title">Ashley <br />&amp; Eoin</h1>
+      <p class="password-gate__subtitle">Please enter the password to view our wedding website</p>
+      <form class="password-gate__form" id="password-form">
+        <input
+          type="password"
+          class="password-gate__input"
+          id="password-input"
+          placeholder="Enter password"
+          autocomplete="off"
+          autofocus
+        />
+        <button type="submit" class="password-gate__button">Enter</button>
+      </form>
+      <p class="password-gate__error" id="password-error" hidden>Incorrect password — try again</p>
+    </div>
+  </div>
+
+  <!-- ============================================================
        HERO + INTRO STACK
        Hero sticks at top: 0 while Intro slides over it on scroll.
   ============================================================ -->
