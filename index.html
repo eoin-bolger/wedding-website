@@ -78,6 +78,13 @@
            The names h1 lives inside so it's naturally contained by the oval.
            Replace the background-color with a real <img> when the portrait is ready. -->
       <div class="hero__portrait">
+        <!-- Burst photos — rapid-fire during entrance, then hidden -->
+        <img src="images/hero-section-flash-1.webp" alt="" width="700" height="1050" class="hero__photo hero__photo--flash" aria-hidden="true" />
+        <img src="images/hero-section-flash-2.webp" alt="" width="700" height="1050" class="hero__photo hero__photo--flash" aria-hidden="true" />
+        <img src="images/hero-section-flash-3.webp" alt="" width="700" height="1050" class="hero__photo hero__photo--flash" aria-hidden="true" />
+        <img src="images/hero-section-flash-4.webp" alt="" width="700" height="1050" class="hero__photo hero__photo--flash" aria-hidden="true" />
+        <!-- Main portrait — final resting image after burst -->
+        <img src="images/hero-section-main.webp" alt="Ashley and Eoin" width="700" height="1050" class="hero__photo hero__photo--main" />
         <h1 class="hero__names">Ashley <br /> &amp;&nbsp;Eoin</h1>
       </div>
 
@@ -307,16 +314,16 @@
   ============================================================ -->
   <section class="photo-strip" id="photo-strip-dublin" aria-hidden="true">
     <div class="photo-strip__item">
-      <img src="" alt="" width="16" height="9">
+      <img src="images/image-section-1-4.webp" alt="" width="533" height="800" style="object-position: 50% 30%">
     </div>
     <div class="photo-strip__item">
-      <img src="" alt="" width="16" height="9">
+      <img src="images/image-section-1-2.webp" alt="" width="800" height="533">
     </div>
     <div class="photo-strip__item">
-      <img src="" alt="" width="16" height="9">
+      <img src="images/image-section-1-3.webp" alt="" width="800" height="533" style="object-position: 50% 100%">
     </div>
     <div class="photo-strip__item">
-      <img src="" alt="" width="16" height="9">
+      <img src="images/image-section-1-1.webp" alt="" width="533" height="800" style="object-position: 50% 35%">
     </div>
   </section>
 
@@ -374,16 +381,7 @@
   ============================================================ -->
   <section class="photo-strip" id="photo-strip-nightbefore" aria-hidden="true">
     <div class="photo-strip__item">
-      <img src="" alt="" width="16" height="9">
-    </div>
-    <div class="photo-strip__item">
-      <img src="" alt="" width="16" height="9">
-    </div>
-    <div class="photo-strip__item">
-      <img src="" alt="" width="16" height="9">
-    </div>
-    <div class="photo-strip__item">
-      <img src="" alt="" width="16" height="9">
+      <img src="images/image-section-2.webp" alt="" width="1600" height="1066" style="aspect-ratio: 3/2">
     </div>
   </section>
 
@@ -561,16 +559,16 @@
   ============================================================ -->
   <section class="photo-strip" id="photo-strip-wedding" aria-hidden="true">
     <div class="photo-strip__item">
-      <img src="" alt="" width="16" height="9">
+      <img src="images/image-section-2-1.webp" alt="" width="800" height="1200">
     </div>
     <div class="photo-strip__item">
-      <img src="" alt="" width="16" height="9">
+      <img src="images/image-section-2-2.webp" alt="" width="800" height="1200">
     </div>
     <div class="photo-strip__item">
-      <img src="" alt="" width="16" height="9">
+      <img src="images/image-section-2-3.webp" alt="" width="800" height="1200">
     </div>
     <div class="photo-strip__item">
-      <img src="" alt="" width="16" height="9">
+      <img src="images/image-section-2-4.webp" alt="" width="800" height="1200">
     </div>
   </section>
 
@@ -666,10 +664,14 @@
                Both polaroids are absolute inside; they scale as the column resizes. -->
           <div class="getting-there__polaroids">
             <div class="polaroid getting-there__polaroid--back" aria-hidden="true">
-              <div class="polaroid__photo"></div>
+              <div class="polaroid__photo">
+                <img src="images/polaroid-2.webp" alt="" width="600" height="900">
+              </div>
             </div>
             <div class="polaroid getting-there__polaroid--front" aria-hidden="true">
-              <div class="polaroid__photo"></div>
+              <div class="polaroid__photo">
+                <img src="images/polaroid-1.webp" alt="" width="600" height="900">
+              </div>
             </div>
           </div>
 

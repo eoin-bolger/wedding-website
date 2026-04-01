@@ -112,9 +112,14 @@ function drawHeroDots() {
   /* Convenience array — every element that starts hidden */
   var allEls = [portrait, names, flankL, flankR, ovalOuter, ovalMid, ovalInner, dashed, navToggle];
 
+  /* Grab photo elements for burst animation */
+  var flashPhotos = document.querySelectorAll('.hero__photo--flash');
+  var mainPhoto   = document.querySelector('.hero__photo--main');
+
   /* 2. Guard: if critical elements missing or GSAP not loaded, show everything */
   if (!portrait || !names || typeof gsap === 'undefined') {
     allEls.forEach(function(el) { if (el) el.style.opacity = '1'; });
+    if (mainPhoto) mainPhoto.style.opacity = '1';
     drawHeroDots();
     return;
   }
@@ -122,6 +127,7 @@ function drawHeroDots() {
   /* 3. Reduced-motion check — show everything instantly, no animation */
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     gsap.set(allEls, { opacity: 1 });
+    if (mainPhoto) gsap.set(mainPhoto, { opacity: 1 });
     drawHeroDots();
     return;
   }
@@ -130,7 +136,9 @@ function drawHeroDots() {
      portrait has opacity:0 from CSS but still occupies layout space,
      so offsetHeight returns its rendered height. We want the portrait
      to fill ~85% of the viewport height when scaled up. */
-  var scaleFactor = (window.innerHeight * 0.85) / portrait.offsetHeight;
+  var heightScale = (window.innerHeight * 0.85) / portrait.offsetHeight;
+  var widthScale  = (window.innerWidth  * 0.85) / portrait.offsetWidth;
+  var scaleFactor = Math.min(heightScale, widthScale);
 
   /* 5. Set initial GSAP states
      Portrait appears immediately at large scale (opacity 1, scaled up).
@@ -138,32 +146,37 @@ function drawHeroDots() {
   gsap.set(portrait, { opacity: 1, scale: scaleFactor });
   gsap.set(names,    { opacity: 0 }); /* Explicit — stays hidden */
 
-  /* 6. Colour cycling — simulates burst-photo flip
-     GSAP tweens backgroundColor so each transition cross-fades smoothly.
-     ~3s total, then 500ms pause before the scale-down timeline.
-     Later, when real photos arrive, this swaps <img> src instead. */
-  var colors = [
-    '#c4917a',  /* dusty rose */
-    '#8fa3a8',  /* muted teal */
-    '#b8a36a',  /* sand */
-    '#7a8c5c',  /* deeper green (final "frame") */
-  ];
-  /* Starting colour is already green-mid from CSS — we tween FROM there */
-
+  /* 6. Photo burst — rapid-fire flash photos, then settle on main portrait.
+     Each flash shows for ~0.75s with a fast 0.15s crossfade between them,
+     mimicking a camera shutter sequence. ~3s total. */
   var burstTl = gsap.timeline({
     onComplete: function() {
-      /* 500ms pause after last colour — let the eye settle */
+      /* 500ms pause after main photo lands — let the eye settle */
       setTimeout(buildTimeline, 500);
     },
   });
 
-  colors.forEach(function(color) {
-    burstTl.to(portrait, {
-      backgroundColor: color,
-      duration: 0.75,
+  /* Show first flash photo immediately as starting frame */
+  if (flashPhotos.length > 0) {
+    gsap.set(flashPhotos[0], { opacity: 1 });
+  }
+
+  /* Cycle through flash photos: fade out current, fade in next */
+  for (var i = 0; i < flashPhotos.length; i++) {
+    var isLast = i === flashPhotos.length - 1;
+    var nextEl = isLast ? mainPhoto : flashPhotos[i + 1];
+    /* Hold current photo visible, then quick crossfade to next */
+    burstTl.to(flashPhotos[i], {
+      opacity: 0,
+      duration: 0.15,
       ease: 'power1.inOut',
-    });
-  });
+    }, '+=' + (0.75 - 0.15)); /* 0.6s hold + 0.15s fade = 0.75s per photo */
+    burstTl.to(nextEl, {
+      opacity: 1,
+      duration: 0.15,
+      ease: 'power1.inOut',
+    }, '<'); /* Simultaneous crossfade */
+  }
 
   /* 7. Build GSAP timeline — runs after colour cycling + pause */
   function buildTimeline() {
@@ -964,8 +977,8 @@ function drawHeroDots() {
     scrollTrigger: {
       trigger: spacer,
       start: 'top bottom',   // spacer top at viewport bottom = Our Story at viewport top
-      end: 'bottom bottom',  // spacer bottom at viewport bottom = 1200vh of scrub
-      scrub: 1,
+      end: 'bottom bottom',  // spacer bottom at viewport bottom
+      scrub: window.innerWidth <= 640 ? 0.3 : 1,  // Less smoothing on mobile — prevents momentum lag
       invalidateOnRefresh: true,
     },
   });
@@ -1139,6 +1152,31 @@ function drawHeroDots() {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   gsap.registerPlugin(ScrollTrigger);
+
+
+  /* ── Timeline stagger offset ───────────────────────────────────
+     The right column needs padding-top = half an event's height +
+     half the gap, so right events sit centred between left events.
+     Calculated from the DOM so it stays correct at every viewport. */
+
+  var rightCol    = document.querySelector('.timeline__col--right');
+  var firstEvent  = document.querySelector('.timeline__col--left .timeline__event');
+
+  function setTimelineOffset() {
+    if (!rightCol || !firstEvent) return;
+    var leftCol     = document.querySelector('.timeline__col--left');
+    var gap         = parseFloat(getComputedStyle(leftCol).gap) || 0;
+    var eventHeight = firstEvent.offsetHeight;
+    rightCol.style.paddingTop = (eventHeight + gap) / 2 + 'px';
+  }
+
+  setTimelineOffset();
+
+  var resizeTimer;
+  window.addEventListener('resize', function() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(setTimelineOffset, 150);
+  });
 
 
   /* ── Zone 1: Upper section — staggered entrance ──────────────

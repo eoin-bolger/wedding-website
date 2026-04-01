@@ -380,10 +380,11 @@ h4 {
 /* Portrait — sits above oval rings via z-index.
    overflow: hidden + border-radius: 50% clips any content (including the h1) to the oval shape. */
 .hero__portrait {
+  position: relative; /* Anchors absolutely-positioned photos */
   width:  var(--hero-portrait-w);
   height: var(--hero-portrait-h);
   border-radius: 50%;
-  background-color: var(--color-green-mid); /* Placeholder — replace with <img> */
+  background-color: var(--color-green-mid); /* Fallback while images load */
   overflow: hidden;
   z-index: 1;
   display: flex;
@@ -391,10 +392,23 @@ h4 {
   justify-content: center;
 }
 
+/* Photos — stacked inside the oval, JS controls which is visible */
+.hero__photo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto; /* Natural aspect ratio — image is taller than the oval */
+  top: -10%; /* Shift up — adjust this value to taste */
+  opacity: 0; /* JS reveals during entrance animation */
+}
+
 /* Names — lives inside .hero__portrait so oval clips it naturally.
    padding: 0 24px enforces 24px gap from the oval edge on each side.
    font-family inherited from global h1 rule. */
 .hero__names {
+  position: relative; /* Above photos */
+  z-index: 2;
   /* Scale with the oval. Capped at --size-h1 so it never exceeds the token. */
   font-size: clamp(24px, calc(var(--hero-portrait-w) * 0.15), var(--size-h1));
   line-height: var(--leading-h1);
@@ -470,6 +484,9 @@ h4 {
   .hero__oval--dashed,
   .site-nav__toggle {
     opacity: 1;
+  }
+  .hero__photo--main {
+    opacity: 1; /* Show final portrait immediately — no cycling */
   }
 }
 
@@ -582,9 +599,17 @@ h4 {
 }
 
 /* Invisible scroll runway for the envelope animation.
-   Our Story sticks at the top while this scrolls behind it. */
+   Our Story sticks at the top while this scrolls behind it.
+   Shorter on desktop — 1200vh at 1080px = 12,960px of scrolling,
+   which feels sluggish with a mouse wheel. 900vh ≈ 9,720px. */
 .story-scroll-spacer {
-  height: 1200vh;
+  height: 700vh;
+}
+
+@media (max-width: 1100px) {
+  .story-scroll-spacer {
+    height: 1200vh;
+  }
 }
 
 /* ============================================================
@@ -1204,7 +1229,20 @@ h4 {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center 20%;
   display: block;
+}
+
+.photo-strip__item:nth-child(1) img {
+  object-position: center 25%;
+}
+
+.photo-strip__item:nth-child(3) img {
+  object-position: center 25%;
+}
+
+.photo-strip__item:nth-child(4) img {
+  object-position: center 35%;
 }
 
 /* --- Photo strip mobile: 3 images instead of 4 --- */
@@ -1671,6 +1709,14 @@ h4 {
   width: 100%;
   aspect-ratio: 383 / 414; /* Figma photo area ratio */
   background-color: #d6d0c4; /* neutral placeholder tone */
+  overflow: hidden; /* clip img to aspect-ratio box */
+}
+
+.polaroid__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
 }
 
 /* Back polaroid — Figma rotation */
