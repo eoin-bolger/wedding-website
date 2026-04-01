@@ -858,7 +858,7 @@ h4 {
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE/Edge */
   font-family: var(--font-body);
-  font-size: 22px;
+  font-size: 18px;
   line-height: 1.65;
   color: var(--color-green-dark);
   /* TODO: re-add filter + SVG mask when new texture is ready.
@@ -2326,7 +2326,7 @@ h4 {
   top: calc(var(--page-padding) / 2);
   right: calc(var(--page-padding) / 2);
   z-index: 9999;
-  width: 25vw;
+  width: 35vw;
   height: calc(100dvh - var(--page-padding));
   background-color: var(--color-cream); /* #efe6d3 */
   box-shadow: -4px 4px 32px rgba(0, 0, 0, 0.18);

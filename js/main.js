@@ -605,16 +605,23 @@ function drawHeroDots() {
               /* DEBUG — check in browser console */
               console.log('[nav-jump] target:', href, 'scrollTarget:', scrollTarget);
 
-              /* 3. Jump to the target section */
+              /* 3. Our Story offset — the title shrink (scale 5→1) ends at
+                 'top -50%', meaning 50vh past the section top. Jump there
+                 so the heading is fully shrunk and envelopes are about to enter. */
+              if (href === '#our-story') {
+                scrollTarget += window.innerHeight * 0.5;
+              }
+
+              /* 4. Jump to the target section */
               window.scrollTo(0, scrollTarget);
 
-              /* 4. Sync Lenis internal state to the new position */
+              /* 5. Sync Lenis internal state to the new position */
               if (window.lenis) {
                 window.lenis.animatedScroll = scrollTarget;
                 window.lenis.targetScroll = scrollTarget;
               }
 
-              /* 5. Force ScrollTrigger to recalculate and snap all animations.
+              /* 6. Force ScrollTrigger to recalculate and snap all animations.
                  refresh() recalculates trigger positions and target progress.
                  Then we force-snap every scrubbed animation to its correct
                  progress immediately — without this, scrub: 1 would take
@@ -625,13 +632,26 @@ function drawHeroDots() {
               if (typeof ScrollTrigger !== 'undefined') {
                 ScrollTrigger.refresh();
                 ScrollTrigger.getAll().forEach(function(st) {
+                  /* Force scrub tween to snap instantly — skip the smooth
+                     interpolation so animations land at the correct state
+                     before the overlay fades out. */
+                  var scrubTween = st.getTween();
+                  if (scrubTween) scrubTween.progress(1);
                   if (st.animation) {
                     st.animation.progress(st.progress);
                   }
                 });
               }
 
-              /* 6. Wait one frame for the browser to paint, then restart */
+              /* Our Story: belt-and-suspenders — force heading and envelopes
+                 to their correct state in case scrub still hasn't settled. */
+              if (href === '#our-story') {
+                var storyHeading = document.getElementById('our-story-heading');
+                if (storyHeading) gsap.set(storyHeading, { scale: 1 });
+              }
+
+              /* 7. Wait two frames for ScrollTrigger to fully settle, then reveal */
+              requestAnimationFrame(function() {
               requestAnimationFrame(function() {
                 if (window.lenis) window.lenis.start();
 
@@ -640,6 +660,7 @@ function drawHeroDots() {
                   duration: 0.3,
                   ease: 'power2.inOut',
                 });
+              });
               });
             },
           });
