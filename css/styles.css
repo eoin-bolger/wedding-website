@@ -233,14 +233,16 @@ h4 {
    Tighter scale + reduced line-height keeps headings proportional. */
 @media (max-width: 640px) {
   h2 {
-    font-size: clamp(32px, calc(26.4px + 1.50vw), 40px);
-    line-height: 1.6;
+    font-size: clamp(32px, calc(20.68px + 3.02vw), 40px);
+    line-height: 2;
   }
 
-  .event-section__header h3,
-  .wedding-day__header h3 {
-    font-size: clamp(26px, calc(21.8px + 1.13vw), 32px);
-    line-height: 1.6;
+  body {
+    font-size: 20px;
+  }
+
+  .event-section__note {
+    font-size: 18px;
   }
 }
 
@@ -294,7 +296,7 @@ h4 {
 
 #hero {
   background-color: var(--color-bg-hero);
-  height: 100vh;
+  height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -410,7 +412,7 @@ h4 {
        fits inside the fixed 100vh section.
        368px = vertical overhead: padding(80) + flanking text(120) + gaps(80) + ring frame(88). */
     --hero-portrait-w: min(
-      calc((100vh - 368px) / 1.302),
+      calc((100dvh - 368px) / 1.302),
       calc(100vw - 2 * var(--page-padding) - 104px),
       525px
     );
@@ -431,6 +433,43 @@ h4 {
   .hero__flanking {
     flex: none;
     width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  #hero {
+    /* 100vh on mobile Safari = large viewport height (constant).
+       Avoids the jank from 100dvh resizing when the URL bar hides/shows. */
+    height: 100vh;
+  }
+}
+
+/* Hero entrance — initial states (JS animates these to final values).
+   Without this, elements flash at their final position before GSAP
+   has a chance to set initial scale/opacity. */
+.hero__portrait,
+.hero__names,
+.hero__flanking,
+.hero__oval--outer,
+.hero__oval--middle,
+.hero__oval--inner,
+.hero__oval--dashed,
+.site-nav__toggle {
+  opacity: 0;
+}
+
+/* Safety net: if reduced-motion is on, show everything immediately
+   even if JS is slow to load */
+@media (prefers-reduced-motion: reduce) {
+  .hero__portrait,
+  .hero__names,
+  .hero__flanking,
+  .hero__oval--outer,
+  .hero__oval--middle,
+  .hero__oval--inner,
+  .hero__oval--dashed,
+  .site-nav__toggle {
+    opacity: 1;
   }
 }
 
@@ -477,6 +516,7 @@ h4 {
 
 #intro-heading {
   color: var(--color-green-dark);
+  line-height: 2;
 }
 
 .intro__body-group {
@@ -492,6 +532,16 @@ h4 {
   line-height: 1.2;              /* 120% */
   color: var(--color-green-dark);
   text-wrap: pretty;
+}
+
+@media (max-width: 640px) {
+  .intro__body {
+    font-size: 20px;
+  }
+
+  .intro__content {
+    gap: 32px;
+  }
 }
 
 /* Grá Mór illustration
@@ -534,7 +584,7 @@ h4 {
 /* Invisible scroll runway for the envelope animation.
    Our Story sticks at the top while this scrolls behind it. */
 .story-scroll-spacer {
-  height: 800vh;
+  height: 1200vh;
 }
 
 /* ============================================================
@@ -545,7 +595,7 @@ h4 {
   position: sticky;
   top: 0;
   z-index: 0;
-  min-height: 100vh;
+  min-height: 100dvh;
   overflow: clip; /* Clips 5× scaled heading + off-screen envelopes. Uses clip (not hidden)
                      to avoid creating a scroll container that breaks sticky positioning. */
   background-image: url('../images/floral-background.webp');
@@ -783,7 +833,7 @@ h4 {
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE/Edge */
   font-family: var(--font-body);
-  font-size: 16px;
+  font-size: 22px;
   line-height: 1.65;
   color: var(--color-green-dark);
   /* TODO: re-add filter + SVG mask when new texture is ready.
@@ -795,12 +845,17 @@ h4 {
   display: none;
 }
 
+/* Paragraph spacing inside letters — fills empty space after text was shortened */
+.envelope__letter-inner p + p:not(.envelope__signature) {
+  margin-top: 16px;
+}
+
 /* Signature at the bottom of the letter — TheSecretLibrary to look handwritten */
 .envelope__signature {
   font-family: var(--font-h2); /* TheSecretLibrary */
   font-size: clamp(18px, 1.5vw, 24px);
   color: var(--color-green-dark);
-  margin-top: 24px;
+  margin-top: 36px;
   text-align: left;
 }
 
@@ -835,7 +890,7 @@ h4 {
 
 @media (max-width: 640px) {
   .our-story__heading {
-    font-size: clamp(60px, 22vw, 100px);
+    font-size: clamp(44px, 16vw, 72px);
     white-space: normal; /* allow "Our" and "Story" to stack on narrow screens */
     line-height: 2;
   }
@@ -854,10 +909,8 @@ h4 {
     width: min(350px, 85vw); /* Narrower than envelope, still fits small screens */
     padding: 24px 20px;
     font-size: 14px;
-    justify-content: flex-start; /* Desktop uses center, but on mobile content overflows —
-       flex-start starts text from top so overflow goes downward
-       where overflow-y: auto can handle it */
-    -webkit-overflow-scrolling: touch; /* Smooth scroll momentum on iOS */
+    justify-content: flex-start; /* Desktop uses center, but on mobile content may be taller —
+       flex-start starts text from top */
   }
 
   .envelope__letter-inner {
@@ -933,6 +986,14 @@ h4 {
   line-height: var(--leading-h2);
 }
 
+@media (max-width: 640px) {
+  .event-section__header h3,
+  .wedding-day__header h3 {
+    font-size: clamp(28px, calc(21.66px + 1.69vw), 34px);
+    line-height: 2;
+  }
+}
+
 .event-section {
   padding: var(--padding-section) var(--page-padding );
 }
@@ -1006,7 +1067,9 @@ h4 {
 
 @media (max-width: 640px) {
   .event-section__header {
-    margin-bottom: 32px; /* Tighter spacing between header and body on mobile */
+    flex-direction: column; /* Stack title above date/badge on mobile */
+    gap: 24px;             /* Title to date/badge */
+    margin-bottom: 48px;   /* Header group further from body content */
   }
 
   .event-section__meta {
@@ -1087,6 +1150,32 @@ h4 {
   margin-top: 8px;
 }
 
+/* --- Schedule mobile: stack time above description --- */
+@media (max-width: 640px) {
+  .event-section__schedule {
+    grid-template-columns: 1fr;
+    row-gap: 0;
+  }
+
+  /* Remove the 16px+16px padding gap between stacked time and description */
+  .event-section__schedule-item > * {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  /* Re-add vertical spacing between schedule items via the time element */
+  .event-section__time {
+    white-space: normal;
+    padding-top: 16px;
+  }
+
+  /* Description gets a small gap below time */
+  .event-section__schedule-item > *:not(.event-section__time) {
+    padding-top: 4px;
+    padding-bottom: 16px;
+  }
+}
+
 
 /* ============================================================
    PHOTO STRIP — reusable full-width image breaker
@@ -1116,6 +1205,13 @@ h4 {
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+/* --- Photo strip mobile: 3 images instead of 4 --- */
+@media (max-width: 640px) {
+  .photo-strip__item:nth-child(4) {
+    display: none;
+  }
 }
 
 
@@ -1455,20 +1551,29 @@ h4 {
 @media (max-width: 640px) {
 
   /* Tighten 2-column timeline to fit narrow screens */
-  .timeline__col--left  { padding-right: 12px; }
-  .timeline__col--right { padding-left: 12px; padding-top: 60px; }
-  .timeline__col { gap: 72px; } /* More vertical breathing room between events */
+  .timeline__col--left  { padding-right: 12px; align-items: center; }
+  .timeline__col--right { padding-left: 12px; padding-top: 60px; align-items: center; }
+  .timeline__col { gap: 72px; }
 
+  /* Stack photo above text on mobile */
   .timeline__col--left .timeline__event,
   .timeline__col--right .timeline__event {
-    gap: 12px; /* Tighter photo-to-text gap */
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
   }
 
-  .timeline__photo { width: clamp(40px, 10vw, 64px); }
-  .timeline__time { margin-bottom: 16px; } /* More space between time and event label */
+  /* Right column: photo is after text in DOM — pull it above */
+  .timeline__col--right .timeline__photo {
+    order: -1;
+  }
+
+  .timeline__photo { width: clamp(60px, 18vw, 100px); }
+  .timeline__time { margin-bottom: 8px; }
 
   .timeline__label {
-    font-size: clamp(14px, 3.8vw, 18px); /* Smaller so text fits narrow columns */
+    font-size: clamp(14px, 3.8vw, 18px);
   }
 
   .wedding-day__venue-photo-wrap {
@@ -2084,16 +2189,16 @@ h4 {
   }
 
   .countdown__number {
-    font-size: clamp(18px, 5.5vw, 36px); /* Original 7vw is 26px at 375px — this gives ~20px */
-    line-height: 1.2; /* line-height: 2 doubles the vertical space — way too tall on mobile */
+    font-size: clamp(28px, 8.5vw, 54px);
+    line-height: 1.2;
   }
 
   .countdown__colon {
-    font-size: clamp(18px, 5.5vw, 36px);
+    font-size: clamp(28px, 8.5vw, 54px);
   }
 
   .countdown__label {
-    font-size: clamp(12px, 3vw, 16px); /* --size-h3 (28–40px) is too large for mobile labels */
+    font-size: clamp(14px, 3.5vw, 20px);
   }
 }
 
@@ -2103,6 +2208,23 @@ h4 {
     position: static;
   }
 }
+
+/* ============================================================
+   PAGE TRANSITION OVERLAY
+   Full-screen cream cover used for nav-link navigation.
+   GSAP fades opacity 0→1→0; pointer-events stays none so
+   a stuck overlay can never block interaction.
+   ============================================================ */
+
+.page-transition {
+  position: fixed;
+  inset: 0;
+  background: var(--color-cream);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 9997; /* below paper texture (9998) and nav panel (9999) */
+}
+
 
 /* ============================================================
    SECTION 14 — Nav
@@ -2158,8 +2280,8 @@ h4 {
   top: calc(var(--page-padding) / 2);
   right: calc(var(--page-padding) / 2);
   z-index: 9999;
-  width: 40vw;
-  height: calc(100vh - var(--page-padding));
+  width: 25vw;
+  height: calc(100dvh - var(--page-padding));
   background-color: var(--color-cream); /* #efe6d3 */
   box-shadow: -4px 4px 32px rgba(0, 0, 0, 0.18);
   padding: 32px;
@@ -2305,7 +2427,7 @@ h4 {
 .site-nav__contact-name {
   font-family: var(--font-h4);       /* Recoleta SemiBold */
   font-weight: 600;
-  font-size: 14px;
+  font-size: 16px;
   color: var(--color-green-dark);
   margin-bottom: 3px;
 }
@@ -2330,20 +2452,25 @@ h4 {
 }
 
 
-/* ── Mobile ────────────────────────────────────────────────── */
+/* ── Tablet ────────────────────────────────────────────────── */
 
-@media (max-width: 640px) {
+@media (max-width: 1100px) {
   .site-nav__panel {
-    /* Full screen on mobile — no gap from edges */
+    /* Full screen from tablet down */
     top: 0;
     right: 0;
     min-width: 0;
     width: 100vw;
-    height: 100vh;
+    height: 100dvh;
+  }
+}
+
+/* ── Mobile ────────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .site-nav__panel {
     padding: 28px 24px;
   }
-
-  /* contact-detail wrapping is now the default — no mobile override needed */
 }
 
 

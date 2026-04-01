@@ -44,7 +44,7 @@
    inset box-shadow (light top-left, dark bottom-right).
    ------------------------------------------------------------ */
 
-(function drawHeroDots() {
+function drawHeroDots() {
   const svg   = document.querySelector('.hero__oval--dashed');
   const group = document.getElementById('hero-dots');
   if (!svg || !group) return;
@@ -86,6 +86,130 @@
     circle.setAttribute('r', dotRadius);
     circle.setAttribute('fill', 'url(#hero-dot-gradient)');
     group.appendChild(circle);
+  }
+}
+
+
+/* ------------------------------------------------------------
+   Hero — Page-load entrance animation
+   7-step sequence: portrait appears large → colours cycle
+   (placeholder for burst photos) → pause → portrait scales
+   down → names fade in → rings + flanking fade in.
+   ------------------------------------------------------------ */
+
+(function initHeroEntrance() {
+  /* 1. Grab DOM elements */
+  var portrait  = document.querySelector('.hero__portrait');
+  var names     = document.querySelector('.hero__names');
+  var flankL    = document.querySelector('.hero__flanking--left');
+  var flankR    = document.querySelector('.hero__flanking--right');
+  var ovalOuter = document.querySelector('.hero__oval--outer');
+  var ovalMid   = document.querySelector('.hero__oval--middle');
+  var ovalInner = document.querySelector('.hero__oval--inner');
+  var dashed    = document.querySelector('.hero__oval--dashed');
+  var navToggle = document.querySelector('.site-nav__toggle');
+
+  /* Convenience array — every element that starts hidden */
+  var allEls = [portrait, names, flankL, flankR, ovalOuter, ovalMid, ovalInner, dashed, navToggle];
+
+  /* 2. Guard: if critical elements missing or GSAP not loaded, show everything */
+  if (!portrait || !names || typeof gsap === 'undefined') {
+    allEls.forEach(function(el) { if (el) el.style.opacity = '1'; });
+    drawHeroDots();
+    return;
+  }
+
+  /* 3. Reduced-motion check — show everything instantly, no animation */
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    gsap.set(allEls, { opacity: 1 });
+    drawHeroDots();
+    return;
+  }
+
+  /* 4. Calculate scale factor
+     portrait has opacity:0 from CSS but still occupies layout space,
+     so offsetHeight returns its rendered height. We want the portrait
+     to fill ~85% of the viewport height when scaled up. */
+  var scaleFactor = (window.innerHeight * 0.85) / portrait.offsetHeight;
+
+  /* 5. Set initial GSAP states
+     Portrait appears immediately at large scale (opacity 1, scaled up).
+     Everything else stays hidden (opacity 0 from CSS). */
+  gsap.set(portrait, { opacity: 1, scale: scaleFactor });
+  gsap.set(names,    { opacity: 0 }); /* Explicit — stays hidden */
+
+  /* 6. Colour cycling — simulates burst-photo flip
+     GSAP tweens backgroundColor so each transition cross-fades smoothly.
+     ~3s total, then 500ms pause before the scale-down timeline.
+     Later, when real photos arrive, this swaps <img> src instead. */
+  var colors = [
+    '#c4917a',  /* dusty rose */
+    '#8fa3a8',  /* muted teal */
+    '#b8a36a',  /* sand */
+    '#7a8c5c',  /* deeper green (final "frame") */
+  ];
+  /* Starting colour is already green-mid from CSS — we tween FROM there */
+
+  var burstTl = gsap.timeline({
+    onComplete: function() {
+      /* 500ms pause after last colour — let the eye settle */
+      setTimeout(buildTimeline, 500);
+    },
+  });
+
+  colors.forEach(function(color) {
+    burstTl.to(portrait, {
+      backgroundColor: color,
+      duration: 0.75,
+      ease: 'power1.inOut',
+    });
+  });
+
+  /* 7. Build GSAP timeline — runs after colour cycling + pause */
+  function buildTimeline() {
+    var tl = gsap.timeline();
+
+    /* a. Portrait scales down to natural size */
+    tl.to(portrait, {
+      scale: 1,
+      duration: 0.7,
+      ease: 'power3.out',
+    }, 'scale');
+
+    /* b. Draw dots while SVG is still invisible (opacity:0) */
+    tl.call(drawHeroDots, null, '+=0.1');
+
+    /* c. Names + rings + dashed SVG + flanking text + nav toggle fade in together */
+    tl.to(names, {
+      opacity: 1,
+      duration: 0.5,
+      ease: 'power2.out',
+    }, 'rings');
+    tl.to([ovalOuter, ovalMid, ovalInner, dashed], {
+      opacity: 1,
+      duration: 0.5,
+      ease: 'power2.out',
+    }, 'rings');
+
+    tl.to(flankL, {
+      opacity: 1,
+      duration: 0.5,
+      ease: 'power2.out',
+    }, 'rings');
+
+    tl.to(flankR, {
+      opacity: 1,
+      duration: 0.5,
+      ease: 'power2.out',
+    }, 'rings');
+
+    if (navToggle) {
+      tl.to(navToggle, {
+        opacity: 1,
+        duration: 0.5,
+        ease: 'power2.out',
+      }, 'rings');
+    }
   }
 }());
 
@@ -296,6 +420,11 @@
 
   let isOpen = false;
 
+  /* ── Page transition overlay — created once, reused for nav link jumps ── */
+  const overlay = document.createElement('div');
+  overlay.className = 'page-transition';
+  document.body.appendChild(overlay);
+
 
   /* ── Open ──────────────────────────────────────────────── */
 
@@ -334,9 +463,12 @@
     gsap.killTweensOf(allItems);
     gsap.killTweensOf(panel);
 
-    /* Panel: single tween from corner — starts immediately on click */
+    /* Panel: single tween from corner — starts immediately on click.
+       filter + opacity reset in case a previous close was interrupted mid-blur. */
     gsap.to(panel, {
       clipPath: 'inset(0% 0% 0% 0%)',
+      filter: 'blur(0px)',
+      opacity: 1,
       duration: 0.55,
       ease: 'expo.out',
     });
@@ -379,15 +511,18 @@
     gsap.killTweensOf(links);
     gsap.killTweensOf([panel, rsvpEl, contactEl]);
 
-    /* Close panel — power3.in accelerates smoothly into closure.
-       Panel clip-path handles hiding all content inside; no need to animate children. */
+    /* Close panel — clip-path shrinks, content blurs + fades for a soft dissolve.
+       blur(6px) + opacity 0.85 softens the mechanical clip-path slide. */
     gsap.to(panel, {
       clipPath: 'inset(0% 0% 100% 100%)',
+      filter: 'blur(6px)',
+      opacity: 0.85,
       duration: 0.5,
       ease: 'power3.in',
       onComplete: function() {
         panel.setAttribute('hidden', '');
         panel.style.clipPath = 'inset(0% 0% 100% 100%)'; /* reset for next open */
+        gsap.set(panel, { filter: 'blur(0px)', opacity: 1 }); /* reset blur for next open */
         /* Panel is now fully hidden — restore cream if still over a dark section */
         if (window.updateNavColor) window.updateNavColor();
       },
@@ -406,24 +541,96 @@
   });
 
 
-  /* ── Close on nav link click — scroll to section via Lenis ─ */
+  /* ── Close on nav link click — fade transition to section ──
+     Instead of smooth-scrolling past every animation, we:
+     1. Close the panel (with blur dissolve)
+     2. Fade a cream overlay in (300ms)
+     3. Instant-jump to the target section
+     4. Fade the overlay back out (300ms)
+     This avoids the "animation storm" of scrolling past many
+     ScrollTrigger-driven sections at high speed. */
 
   links.forEach(function(link) {
     link.addEventListener('click', function(e) {
       const href = this.getAttribute('href');
-      if (window.lenis && href && href.startsWith('#')) {
+      if (href && href.startsWith('#')) {
         e.preventDefault();
         closeNav();
-        /* Wait for the panel close animation (0.5s) to fully finish before scrolling */
+
+        const target = document.querySelector(href);
+        if (!target) return;
+
+        if (prefersReduced) {
+          /* Reduced motion: instant jump, no fade */
+          target.scrollIntoView();
+          return;
+        }
+
+        /* Wait for panel close to mostly finish, then fade→jump→unfade */
         setTimeout(function() {
-          const target = document.querySelector(href);
-          const distance = target ? Math.abs(target.getBoundingClientRect().top) : 3000;
-          /* Constant speed: duration scales with distance so every section
-             travels at the same pace. Clamped so very short/long scrolls
-             don't feel too snappy or too slow. */
-          const duration = Math.min(4, Math.max(1, distance / 2500));
-          window.lenis.scrollTo(href, { duration: duration });
-        }, 1000);
+          /* Fade overlay in */
+          gsap.to(overlay, {
+            opacity: 1,
+            duration: 0.3,
+            ease: 'power2.inOut',
+            onComplete: function() {
+              /* ── Measure position at scroll 0 ───────────────────────
+                 offsetTop is broken for sticky elements — it returns
+                 the current stuck/unstuck position, not the natural
+                 flow position. The value changes with scroll position.
+                 Fix: scroll to 0 (overlay hides the page), then read
+                 getBoundingClientRect().top which gives the true
+                 document position when scrollY is 0. */
+
+              /* 1. Stop Lenis so it can't fight any scroll changes */
+              if (window.lenis) window.lenis.stop();
+
+              /* 2. Scroll to top, measure target's natural position */
+              window.scrollTo(0, 0);
+              var scrollTarget = target.getBoundingClientRect().top;
+
+              /* DEBUG — check in browser console */
+              console.log('[nav-jump] target:', href, 'scrollTarget:', scrollTarget);
+
+              /* 3. Jump to the target section */
+              window.scrollTo(0, scrollTarget);
+
+              /* 4. Sync Lenis internal state to the new position */
+              if (window.lenis) {
+                window.lenis.animatedScroll = scrollTarget;
+                window.lenis.targetScroll = scrollTarget;
+              }
+
+              /* 5. Force ScrollTrigger to recalculate and snap all animations.
+                 refresh() recalculates trigger positions and target progress.
+                 Then we force-snap every scrubbed animation to its correct
+                 progress immediately — without this, scrub: 1 would take
+                 1 second to interpolate, and the user would see stale
+                 animation states (e.g. letters still visible).
+                 .progress() also fires .call() callbacks the playhead
+                 crosses, which triggers resetLetter() for the envelopes. */
+              if (typeof ScrollTrigger !== 'undefined') {
+                ScrollTrigger.refresh();
+                ScrollTrigger.getAll().forEach(function(st) {
+                  if (st.animation) {
+                    st.animation.progress(st.progress);
+                  }
+                });
+              }
+
+              /* 6. Wait one frame for the browser to paint, then restart */
+              requestAnimationFrame(function() {
+                if (window.lenis) window.lenis.start();
+
+                gsap.to(overlay, {
+                  opacity: 0,
+                  duration: 0.3,
+                  ease: 'power2.inOut',
+                });
+              });
+            },
+          });
+        }, 500);
       } else {
         closeNav();
       }
@@ -673,6 +880,7 @@
   var ashleyLetterTl = null;
   var eoinLetterTl   = null;
 
+
   function playLetterSequence(letterEl, cardEl, foldUpper, foldLower) {
     var extractY = getExtractionY(cardEl, letterEl);
     var ltl = gsap.timeline();
@@ -732,11 +940,11 @@
      Timeline positions (pinned timeline):
      0.6–1.2  Ashley entrance
      1.3–1.6  Ashley flap
-     1.6      Ashley letter trigger → dead space until 3.2
-     3.2–3.8  Eoin entrance
-     3.9–4.2  Eoin flap
-     4.2      Eoin letter trigger → dead space until 5.8
-     5.8–6.3  End hold */
+     1.6      Ashley letter trigger → 2.0 unit reading gap
+     3.6–4.2  Eoin entrance
+     4.3–4.6  Eoin flap
+     4.6      Eoin letter trigger → 2.0 unit reading gap
+     4.6–6.6  End hold */
 
   /* ── Title shrink — separate scroll range, before the pin ────── */
   gsap.fromTo(heading, { scale: 5 }, {
@@ -756,7 +964,7 @@
     scrollTrigger: {
       trigger: spacer,
       start: 'top bottom',   // spacer top at viewport bottom = Our Story at viewport top
-      end: 'bottom bottom',  // spacer bottom at viewport bottom = 800vh of scrub
+      end: 'bottom bottom',  // spacer bottom at viewport bottom = 1200vh of scrub
       scrub: 1,
       invalidateOnRefresh: true,
     },
@@ -786,14 +994,14 @@
       }
     }, null, 1.6)
 
-    /* ── 3.2–3.8: Eoin entrance ──────────────────────────────────── */
-    .to(eoin,     { x: 0, ease: 'power2.out', duration: 0.6 }, 3.2)
-    .to(eoinCard, { z: 0, rotateY: 0, ease: 'power2.out', duration: 0.6 }, 3.2)
+    /* ── 3.6–4.2: Eoin entrance ──────────────────────────────────── */
+    .to(eoin,     { x: 0, ease: 'power2.out', duration: 0.6 }, 3.6)
+    .to(eoinCard, { z: 0, rotateY: 0, ease: 'power2.out', duration: 0.6 }, 3.6)
 
-    /* ── 3.9–4.2: Eoin flap ──────────────────────────────────────── */
-    .to(eoinFlap, { rotateX: 180, ease: 'power2.inOut', duration: 0.3 }, 3.9)
+    /* ── 4.3–4.6: Eoin flap ──────────────────────────────────────── */
+    .to(eoinFlap, { rotateX: 180, ease: 'power2.inOut', duration: 0.3 }, 4.3)
 
-    /* ── 4.2: Trigger Eoin letter sequence ────────────────────────── */
+    /* ── 4.6: Trigger Eoin letter sequence ────────────────────────── */
     .call(function() {
       var dir = tl.scrollTrigger.direction;
       if (dir === 1) {
@@ -805,10 +1013,10 @@
         if (eoinLetterTl) { eoinLetterTl.kill(); eoinLetterTl = null; }
         resetLetter(eoinLetter, eoinCard, eoinFoldUpper, eoinFoldLower);
       }
-    }, null, 4.2)
+    }, null, 4.6)
 
-    /* ── 5.8–6.3: End hold ───────────────────────────────────────── */
-    .to({}, { duration: 0.5 }, 5.8);
+    /* ── 4.6–6.6: End hold ───────────────────────────────────────── */
+    .to({}, { duration: 2.0 }, 4.6);
 }());
 
 
@@ -846,35 +1054,6 @@
   });
 }());
 
-
-/* ------------------------------------------------------------
-   Our Story parallax
-   Same pattern as the hero: Our Story is position: sticky so
-   it stays visible while Proposal slides over it. Without this
-   parallax, the section freezes completely. This tween drifts
-   the content upward slowly so it feels alive.
-   ------------------------------------------------------------ */
-
-(function initOurStoryParallax() {
-  var section  = document.getElementById('our-story');
-  var proposal = document.getElementById('proposal');
-  if (!section || !proposal) return;
-  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-  gsap.registerPlugin(ScrollTrigger);
-
-  gsap.to(section, {
-    yPercent: -15,
-    ease: 'none',
-    scrollTrigger: {
-      trigger: proposal,
-      start: 'top bottom',   // proposal enters viewport — overlap begins
-      end: 'top top',         // proposal covers Our Story — overlap ends
-      scrub: true,
-    },
-  });
-}());
 
 
 /* ------------------------------------------------------------
@@ -993,10 +1172,24 @@
     zone1Tl.to(threeCol, { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out' }, 0.2);
     /* Beat 3: first divider */
     zone1Tl.to(dividers[0], { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out' }, '+=0.15');
-    /* Beat 4: attire block */
-    zone1Tl.to(attire, { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out' }, '+=0.15');
-    /* Beat 5: second divider */
+    /* Beat 4: second divider (follows first divider, not attire) */
     zone1Tl.to(dividers[1], { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out' }, '+=0.15');
+  }
+
+  /* Attire gets its own ScrollTrigger — fires when it enters the viewport */
+  if (attire) {
+    gsap.set(attire, { autoAlpha: 0, y: 30 });
+    gsap.to(attire, {
+      autoAlpha: 1,
+      y: 0,
+      duration: 0.8,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: attire,
+        start: 'top 85%',
+        once: true,
+      },
+    });
   }
 
 
