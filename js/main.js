@@ -1174,6 +1174,8 @@ function initHeroEntrance() {
 
   gsap.registerPlugin(ScrollTrigger);
 
+  try {
+
 
   /* ── Timeline stagger offset ───────────────────────────────────
      The right column needs padding-top = half an event's height +
@@ -1381,6 +1383,12 @@ function initHeroEntrance() {
     .to(venueRight, { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out' }, 0.2);
   }
 
+  } catch (e) {
+    console.warn('Wedding Day animations failed:', e);
+    /* If the animation broke, make sure all hidden elements are visible */
+    var hidden = document.querySelectorAll('#wedding-day [style*="visibility: hidden"]');
+    hidden.forEach(function(el) { el.style.visibility = 'visible'; el.style.opacity = '1'; });
+  }
 }());
 
 
@@ -1553,7 +1561,118 @@ function initHeroEntrance() {
 
 
 /* ------------------------------------------------------------
-   Section 11 — Common Questions entrance
+   Section 11 — Things to Do Nearby — accordion toggle
+   Same expand/collapse pattern as FAQ accordion.
+   ------------------------------------------------------------ */
+
+(function initThingsToDoAccordion() {
+  var buttons = document.querySelectorAll('.things-to-do__category-heading');
+  if (!buttons.length) return;
+
+  var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function openItems(panel) {
+    var inner = panel.querySelector('.things-to-do__items-inner');
+    if (typeof gsap === 'undefined') {
+      panel.style.height = 'auto';
+      if (inner) inner.style.transform = 'translateY(0)';
+      return;
+    }
+    gsap.killTweensOf([panel, inner]);
+    if (prefersReduced) {
+      gsap.set(panel, { height: 'auto' });
+      gsap.set(inner, { y: '0%' });
+      return;
+    }
+    gsap.to(panel, { height: 'auto', duration: 0.45, ease: 'power2.out' });
+    gsap.to(inner, { y: '0%',        duration: 0.45, ease: 'power2.out' });
+  }
+
+  function closeItems(panel) {
+    var inner = panel.querySelector('.things-to-do__items-inner');
+    if (typeof gsap === 'undefined') {
+      panel.style.height = '0';
+      if (inner) inner.style.transform = 'translateY(-100%)';
+      return;
+    }
+    gsap.killTweensOf([panel, inner]);
+    if (prefersReduced) {
+      gsap.set(panel, { height: 0 });
+      gsap.set(inner, { y: '-100%' });
+      return;
+    }
+    gsap.to(panel, { height: 0,      duration: 0.35, ease: 'power2.in' });
+    gsap.to(inner, { y: '-100%',     duration: 0.35, ease: 'power2.in' });
+  }
+
+  buttons.forEach(function(button) {
+    button.addEventListener('click', function() {
+      var isOpen  = this.getAttribute('aria-expanded') === 'true';
+      var panelId = this.getAttribute('aria-controls');
+      var panel   = document.getElementById(panelId);
+
+      this.setAttribute('aria-expanded', String(!isOpen));
+      if (isOpen) {
+        closeItems(panel);
+      } else {
+        openItems(panel);
+      }
+    });
+  });
+}());
+
+
+/* ------------------------------------------------------------
+   Section 11 — Things to Do Nearby entrance
+   Staggered fade-up: heading → intro → Dublin CTA → categories.
+   ------------------------------------------------------------ */
+
+(function initThingsToDoEntrance() {
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  var section = document.getElementById('things-to-do');
+  if (!section) return;
+
+  var heading    = document.getElementById('things-to-do-heading');
+  var intro      = section.querySelector('.things-to-do__intro');
+  var dublinCta  = section.querySelector('.things-to-do__dublin-cta');
+  var categories = section.querySelectorAll('.things-to-do__category');
+
+  /* Collect all animatable elements */
+  var allEls = [];
+  if (heading)   allEls.push(heading);
+  if (intro)     allEls.push(intro);
+  if (dublinCta) allEls.push(dublinCta);
+  for (var i = 0; i < categories.length; i++) {
+    allEls.push(categories[i]);
+  }
+
+  if (!allEls.length) return;
+
+  gsap.set(allEls, { autoAlpha: 0, y: 30 });
+
+  gsap.timeline({
+    scrollTrigger: {
+      trigger: section,
+      start: 'top 80%',
+      once: true,
+    },
+  })
+  .to(allEls, {
+    autoAlpha: 1,
+    y: 0,
+    duration: 0.8,
+    ease: 'power2.out',
+    stagger: 0.15,
+  });
+}());
+
+
+/* ------------------------------------------------------------
+   Section 12 — Common Questions entrance
    Staggered fade-up: heading → each FAQ item one by one.
    ------------------------------------------------------------ */
 

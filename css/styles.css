@@ -80,10 +80,14 @@ button {
   font: inherit;
 }
 
-/* Remove default anchor color and underline — styled per component */
+/* Inherit color, keep browser-default underline so links are visually distinct */
 a {
   color: inherit;
-  text-decoration: none;
+}
+
+/* Keep ordinal suffixes (st, nd, th) lowercase even inside uppercase parents */
+sup {
+  text-transform: lowercase;
 }
 
 
@@ -1889,7 +1893,7 @@ h4 {
 /* Property/hotel name links */
 .where-to-stay__table a {
   color: inherit;
-  text-decoration: none;
+  text-decoration: underline;
 }
 
 /* Bride/groom note at bottom of Dublin column */
@@ -1929,7 +1933,175 @@ h4 {
 
 
 /* ============================================================
-   SECTION 11 — Common Questions (FAQ accordion)
+   SECTION 11 — Things to Do Nearby
+   ============================================================ */
+
+#things-to-do {
+  background-color: var(--color-cream);
+  padding: var(--padding-section) var(--page-padding);
+}
+
+.things-to-do__inner {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+#things-to-do h2 {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.things-to-do__intro {
+  text-align: center;
+  max-width: var(--max-width-lg);
+  margin: 0 auto 80px;
+}
+
+
+/* ── Dublin guide CTA card ───────────────────────────────── */
+
+.things-to-do__dublin-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  margin-top: 80px;
+  padding: 24px 32px;
+  border: 1.5px solid var(--color-green-dark);
+  text-align: center;
+  text-decoration: none;
+  color: var(--color-green-dark);
+  transition: background-color 0.3s ease-out, border-color 0.3s ease-out;
+}
+
+.things-to-do__dublin-cta:hover {
+  background-color: rgba(67, 70, 31, 0.06);
+}
+
+/* h3 inside the CTA — use global h3 font/size, override margin */
+.things-to-do__dublin-cta-label {
+  margin: 0;
+}
+
+.things-to-do__dublin-cta-action {
+  font-family: var(--font-h4);
+  font-weight: var(--font-h4-weight);
+  font-size: var(--size-body-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+
+/* ── Categories ──────────────────────────────────────────── */
+
+.things-to-do__category {
+  margin-bottom: 40px;
+}
+
+.things-to-do__category:last-of-type {
+  margin-bottom: 0;
+}
+
+.things-to-do__category-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  text-transform: uppercase;
+  color: var(--color-green-dark);
+  font-family: var(--font-h4);
+  font-weight: var(--font-h4-weight);
+  font-size: var(--size-h4);
+  line-height: var(--leading-h4);
+}
+
+/* Chevron — same technique as FAQ, but dark green stroke */
+.things-to-do__category-heading::after {
+  content: '';
+  flex-shrink: 0;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'><path d='M2 5 L8 11 L14 5' stroke='%2343461f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.7;
+  transform: rotate(0deg);
+  transition: transform 0.35s ease-in-out;
+}
+
+.things-to-do__category-heading[aria-expanded="true"]::after {
+  transform: rotate(180deg);
+}
+
+
+/* ── Collapsible items panel ─────────────────────────────── */
+
+.things-to-do__items {
+  overflow: hidden;
+  height: 0;
+}
+
+/* Inner slides down from above into the mask */
+.things-to-do__items-inner {
+  padding-top: 16px;
+  transform: translateY(-100%);
+}
+
+.things-to-do__item {
+  margin-bottom: 20px;
+}
+
+.things-to-do__item:last-child {
+  margin-bottom: 0;
+}
+
+/* Drive time / location metadata */
+.things-to-do__meta {
+  font-family: var(--font-h4);
+  font-weight: normal;
+  font-size: var(--size-body-sm);
+  opacity: 0.7;
+}
+
+
+/* ── Tips list (category 5) ──────────────────────────────── */
+
+.things-to-do__tips {
+  list-style: disc;
+  padding-left: 1.5em;
+}
+
+.things-to-do__tips li {
+  margin-bottom: 16px;
+}
+
+.things-to-do__tips li:last-child {
+  margin-bottom: 0;
+}
+
+
+/* ── Responsive ─────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+
+  .things-to-do__dublin-cta {
+    margin-top: 60px;
+    padding: 20px 24px;
+  }
+
+}
+
+
+/* ============================================================
+   SECTION 12 — Common Questions (FAQ accordion)
    ============================================================ */
 
 #common-questions {
@@ -2025,6 +2197,12 @@ h4 {
 
 .faq__answer-inner p:last-child {
   margin-bottom: 0;
+}
+
+/* Numeric values (phone numbers, etc.) — match hotel price treatment */
+.faq__num {
+  font-family: var(--font-h4);
+  font-weight: normal;
 }
 
 
@@ -2367,6 +2545,7 @@ h4 {
   align-items: baseline;
   gap: 16px;
   text-decoration: none;
+  text-decoration: none;
   padding: 8px 0;
   border-bottom: 1px solid rgba(67, 70, 31, 0.12);
 }
@@ -2410,6 +2589,7 @@ h4 {
   display: block;
   width: 100%;
   padding: 12px 0;
+  text-decoration: none;
   background-color: var(--color-green-dark);
   color: var(--color-cream);
   font-family: var(--font-h4);       /* Recoleta SemiBold */
