@@ -22,19 +22,44 @@
 
   window.lenis = lenis;
 
-  /* Keep ScrollTrigger's scroll position in sync with Lenis.
-     Without this, ScrollTrigger reads stale scroll values during
-     Lenis's smooth interpolation and triggers fire at wrong times. */
+  /* Sync Lenis onto GSAP's own animation ticker so both libraries
+     process on the exact same frame. Without this, Lenis and
+     ScrollTrigger run on separate requestAnimationFrame loops and
+     can read stale scroll positions — causing once: true triggers
+     to miss their threshold crossing.
+     GSAP ticker passes time in seconds; Lenis expects milliseconds. */
   lenis.on('scroll', function() {
     if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.update();
   });
 
-  function raf(time) {
-    lenis.raf(time);
+  if (typeof gsap !== 'undefined') {
+    gsap.ticker.add(function(time) {
+      lenis.raf(time * 1000);
+    });
+    gsap.ticker.lagSmoothing(0);
+  } else {
+    /* Fallback if GSAP hasn't loaded — use a standalone RAF loop */
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
     requestAnimationFrame(raf);
   }
-  requestAnimationFrame(raf);
 }());
+
+
+/* ------------------------------------------------------------
+   ScrollTrigger position refresh after full page load
+   defer scripts run before images/fonts finish loading.
+   ScrollTrigger calculates trigger positions at that moment,
+   but the layout may shift once assets arrive. A refresh on
+   window load recalculates every trigger with the final layout.
+   ------------------------------------------------------------ */
+window.addEventListener('load', function() {
+  if (typeof ScrollTrigger !== 'undefined') {
+    ScrollTrigger.refresh();
+  }
+});
 
 
 /* ------------------------------------------------------------
@@ -421,7 +446,6 @@ function initHeroEntrance() {
   const panel  = document.getElementById('site-nav__panel');
   const toggleClose = toggle.querySelector('.site-nav__toggle-close');
   const links     = panel.querySelectorAll('.site-nav__link');
-  const rsvpEl    = panel.querySelector('.site-nav__rsvp');
   const contactEl = panel.querySelector('.site-nav__contact');
 
   if (!toggle || !panel) return;
@@ -465,12 +489,12 @@ function initHeroEntrance() {
 
     if (prefersReduced) {
       panel.style.clipPath = 'inset(0 0 0 0)';
-      gsap.set(Array.from(links).concat([rsvpEl, contactEl]), { y: '0%' });
+      gsap.set(Array.from(links).concat([contactEl]), { y: '0%' });
       return;
     }
 
-    /* All animated children in one array — links cascade first, then RSVP, then contact */
-    const allItems = Array.from(links).concat([rsvpEl, contactEl]);
+    /* All animated children in one array — links cascade first, then contact */
+    const allItems = Array.from(links).concat([contactEl]);
 
     /* Kill any in-flight tweens on all animated elements */
     gsap.killTweensOf(allItems);
@@ -488,9 +512,8 @@ function initHeroEntrance() {
 
     /* Every element slides from above into its overflow:hidden parent (the mask).
        Links → their .site-nav__item parent.
-       RSVP → .site-nav__rsvp-wrap.
        Contact → .site-nav__contact-wrap.
-       One stagger sequence, all 13 elements flowing together. */
+       One stagger sequence, all elements flowing together. */
     gsap.fromTo(allItems,
       { y: '-101%' },
       { y: '0%', duration: 0.25, stagger: 0.03, delay: 0.5, ease: ITEM_EASE }
@@ -522,7 +545,7 @@ function initHeroEntrance() {
 
     /* Kill any in-flight tweens on all animated elements */
     gsap.killTweensOf(links);
-    gsap.killTweensOf([panel, rsvpEl, contactEl]);
+    gsap.killTweensOf([panel, contactEl]);
 
     /* Close panel — clip-path shrinks, content blurs + fades for a soft dissolve.
        blur(6px) + opacity 0.85 softens the mechanical clip-path slide. */
@@ -1174,8 +1197,6 @@ function initHeroEntrance() {
 
   gsap.registerPlugin(ScrollTrigger);
 
-  try {
-
 
   /* ── Timeline stagger offset ───────────────────────────────────
      The right column needs padding-top = half an event's height +
@@ -1383,12 +1404,41 @@ function initHeroEntrance() {
     .to(venueRight, { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out' }, 0.2);
   }
 
-  } catch (e) {
-    console.warn('Wedding Day animations failed:', e);
-    /* If the animation broke, make sure all hidden elements are visible */
-    var hidden = document.querySelectorAll('#wedding-day [style*="visibility: hidden"]');
-    hidden.forEach(function(el) { el.style.visibility = 'visible'; el.style.opacity = '1'; });
-  }
+}());
+
+
+/* ------------------------------------------------------------
+   Photo strip parallax
+   Same technique as fountain / venue photos: image is 120% tall
+   (CSS), GSAP drifts it from yPercent: -10 to 0 on scroll.
+   ------------------------------------------------------------ */
+
+(function initPhotoStripParallax() {
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  var items = document.querySelectorAll('.photo-strip__item');
+
+  items.forEach(function(item) {
+    var img = item.querySelector('img');
+    if (!img) return;
+
+    gsap.fromTo(img,
+      { yPercent: -10 },
+      {
+        yPercent: 0,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: item,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: true,
+        },
+      }
+    );
+  });
 }());
 
 

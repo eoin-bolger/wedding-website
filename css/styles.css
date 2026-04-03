@@ -1127,6 +1127,11 @@ h4 {
   margin-bottom: 32px;
 }
 
+.event-section__address {
+  font-family: var(--font-h4); /* Recoleta Regular */
+  font-weight: 400;
+}
+
 /* Last child in a column removes its own bottom margin so it doesn't
    add to the section's bottom padding, keeping top and bottom even */
 .event-section__col > p:last-child,
@@ -1231,7 +1236,7 @@ h4 {
 
 .photo-strip__item img {
   width: 100%;
-  height: 100%;
+  height: 120%; /* Extra height for parallax shift */
   object-fit: cover;
   object-position: center 20%;
   display: block;
@@ -2252,11 +2257,13 @@ h4 {
   display: flex;
   flex-wrap:wrap;
   gap: 40px;
-  align-items: start;
+  align-items: stretch;
 }
 
 .gifts__card {
   flex:1;
+  border: 1px solid rgba(67, 70, 31, 0.2); /* --color-green-dark at 20% */
+  padding: 32px;
 }
 
 /* ── Responsive ─────────────────────────────────────────────── */
@@ -2271,14 +2278,6 @@ h4 {
 
 
 /* ── Card ───────────────────────────────────────────────── */
-
-/* Image / QR placeholder */
-.gifts__image-placeholder {
-  width: 100%;
-  aspect-ratio: 1;
-  background-color: #d6d1c9; /* neutral warm grey, matches polaroid placeholder tone */
-  margin-bottom: 20px;
-}
 
 /* Payment method label */
 .gifts__method {
@@ -2579,51 +2578,11 @@ h4 {
 }
 
 
-/* ── RSVP button ───────────────────────────────────────────── */
-
-.site-nav__rsvp-wrap {
-  overflow: hidden; /* Mask — RSVP slides into this from above */
-}
-
-.site-nav__rsvp {
-  display: block;
-  width: 100%;
-  padding: 12px 0;
-  text-decoration: none;
-  background-color: var(--color-green-dark);
-  color: var(--color-cream);
-  font-family: var(--font-h4);       /* Recoleta SemiBold */
-  font-weight: 600;
-  font-size: clamp(16px, 1.8vw, 24px);
-  text-align: center;
-  text-decoration: none;
-  letter-spacing: 0.06em;
-  position: relative;
-  overflow: hidden; /* contains the ::before fill sweep */
-}
-
-/* Fill sweeps down from top on hover */
-.site-nav__rsvp::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(255, 255, 255, 0.12);
-  transform: translateY(-100%);
-  transition: transform 150ms ease-out;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .site-nav__rsvp:hover::before {
-    transform: translateY(0);
-  }
-}
-
-
 /* ── Contact section ───────────────────────────────────────── */
 
 .site-nav__contact-wrap {
   overflow: hidden; /* Mask — contact slides into this from above */
-  margin-top: 24px; /* Gap between RSVP and contact — lives on the wrapper (flex child) */
+  margin-top: 24px;
 }
 
 .site-nav__contact {
